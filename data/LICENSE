@@ -1,0 +1,70 @@
+Natural Earth: terms of use
+===========================
+
+Source: https://www.naturalearthdata.com/about/terms-of-use/ (read 2026-10-06)
+
+The data in this dataset is Natural Earth's, and Natural Earth places it in
+the public domain. Its terms of use, quoted as published:
+
+  All versions of Natural Earth raster + vector map data found on this
+  website are in the public domain. You may use the maps in any manner,
+  including modifying the content and design, electronic dissemination, and
+  offset printing. The primary authors, Tom Patterson and Nathaniel Vaughn
+  Kelso, and all other contributors renounce all financial claim to the maps
+  and invites you to use them for personal, educational, and commercial
+  purposes.
+
+  No permission is needed to use Natural Earth. Crediting the authors is
+  unnecessary.
+
+  However, if you wish to cite the map data, simply use one of the following.
+
+  Short text:
+  Made with Natural Earth.
+
+  Long text:
+  Made with Natural Earth. Free vector and raster map data @
+  naturalearthdata.com.
+
+  [...]
+
+  The authors provide Natural Earth as a public service and are not
+  responsible for any problems relating to accuracy, content, design, and
+  how it is used.
+
+Third-party data credited on the same page
+------------------------------------------
+
+The page names four providers, each with a release of the same form:
+"Natural Earth is hereby granted a non-exclusive license to use the data
+being provided by <provider> for the sole purpose of creating a world base
+map", followed by a disclaimer of completeness, accuracy and fitness.
+
+  - The Washington Post (no theme stated)
+  - European Commission, Joint Research Centre, Institute for Environment and
+    Sustainability (JRC IES): river and lake data, for Europe only
+  - XNR Productions: road transportation data, for North America only
+  - International Mapping Associates, Inc.: time zone data
+
+It also says: "The authors' used name data for more than 20 languages from
+Wikidata which is under a CC0 (public domain) license."
+
+These are licences granted to Natural Earth. Natural Earth distributes the
+whole of its data as public domain; how far that statement covers the parts
+derived from these providers is not something the page settles. Users with
+that concern should read the page themselves.
+
+What this copy changes
+----------------------
+
+raw/: the publisher's zips, byte for byte.
+
+parquet/: one GeoParquet file per layer, made from the shapefile in its zip.
+All attribute fields are kept under their names and in their order, typed
+from the .dbf field definitions; text decoded in the layer's encoding and
+written as UTF-8; empty text, numbers and dates as NULL. Geometry unchanged
+(no reprojection, no repair), in EPSG:4326 longitude/latitude as stated in
+the .prj. Not an endorsement by Natural Earth.
+
+The scripts that made this copy are MIT licensed:
+https://github.com/yuiseki/natural-earth

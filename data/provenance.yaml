@@ -1,0 +1,3352 @@
+# Where this data comes from and what was done to it.
+
+source:
+  name: Natural Earth vector data, 1:10m, 1:50m and 1:110m, cultural and physical
+  publisher: Natural Earth (naturalearthdata.com)
+  distribution: https://naciscdn.org/naturalearth/<scale>/<category>/<layer>.zip
+  layer_list:
+    from: GitHub tree of nvkelso/natural-earth-vector at its latest release tag, read through the public API
+    api: https://api.github.com/repos/nvkelso/natural-earth-vector/git/trees/v5.1.2?recursive=1
+    release: v5.1.2
+    release_published_at: 2022-05-13T23:24:34Z
+    commit: f1890d9f152c896d250a77557a5751a93d494776
+    rule: every .shp under 10m_cultural, 10m_physical, 50m_cultural, 50m_physical, 110m_cultural, 110m_physical
+    layers: 215
+    note: the master branch tree had the same 215 .shp paths on 2026-10-06
+  download_pages:
+    - https://www.naturalearthdata.com/downloads/10m-cultural-vectors/
+    - https://www.naturalearthdata.com/downloads/10m-physical-vectors/
+    - https://www.naturalearthdata.com/downloads/50m-cultural-vectors/
+    - https://www.naturalearthdata.com/downloads/50m-physical-vectors/
+    - https://www.naturalearthdata.com/downloads/110m-cultural-vectors/
+    - https://www.naturalearthdata.com/downloads/110m-physical-vectors/
+  fetched: 2026-10-06
+  licence:
+    applied: public domain (https://www.naturalearthdata.com/about/terms-of-use/, read 2026-10-06)
+    card: "license: other, license_name: public-domain"
+    quote: >-
+      All versions of Natural Earth raster + vector map data found on this
+      website are in the public domain. You may use the maps in any manner,
+      including modifying the content and design, electronic dissemination,
+      and offset printing. [...] No permission is needed to use Natural
+      Earth. Crediting the authors is unnecessary.
+    third_party_credits_on_that_page:
+      - The Washington Post (non-exclusive licence to Natural Earth, for creating a world base map)
+      - European Commission JRC Institute for Environment and Sustainability (river and lake data, Europe only)
+      - XNR Productions (road transportation data, North America only)
+      - International Mapping Associates, Inc. (time zone data)
+      - Wikidata (names in more than 20 languages, CC0)
+    note: |
+      The four providers granted Natural Earth a non-exclusive licence "for
+      the sole purpose of creating a world base map". Natural Earth
+      distributes all its data as public domain; the page does not say how
+      far that covers the parts derived from them.
+
+collection:
+  zips: 206
+  zip_bytes: 829821609
+  layers: 215
+  layers_from_their_own_zip: 203
+  layers_from_a_bundle:
+    10m/cultural/ne_10m_parks_and_protected_lands.zip:
+      - ne_10m_parks_and_protected_lands_area
+      - ne_10m_parks_and_protected_lands_line
+      - ne_10m_parks_and_protected_lands_point
+      - ne_10m_parks_and_protected_lands_scale_rank
+  layers_from_a_theme_package:
+    10m/cultural/10m_cultural.zip:
+      - ne_10m_admin_0_names
+      - ne_10m_admin_1_states_provinces_scale_rank_minor_islands
+      - ne_10m_admin_2_counties_lines
+      - ne_10m_admin_2_counties_to_match
+    50m/cultural/50m_cultural.zip:
+      - ne_50m_admin_0_breakaway_disputed_areas_scale_rank
+      - ne_50m_admin_1_seams
+      - ne_50m_airports
+      - ne_50m_ports
+  why: the CDN answers 403 for <layer>.zip of these twelve layers
+  unavailable: none
+  cdn_last_modified: {"2022-05-13": 95, "2021-09-04": 65, "2021-12-08": 45, "2022-05-05": 1}
+  download_page_links_not_used: |
+    Recorded in MANIFEST.json under page_links_not_fetched with their HEAD
+    status: the theme packages 10m_physical, 50m_physical, 110m_cultural and
+    110m_physical, the _all bundles of bathymetry and graticules, the two
+    building-block bundles (their layers are all fetched from their own
+    zips), and five broken links (403): 10m-admin-0-boundary-lines-maritime,
+    ne_50m_airports, ne_50m_ports and the two *_shp_scale_rank zips.
+  tree_layers_not_linked_on_the_pages: 13 (listed in MANIFEST.json)
+  rasters:
+    listed: 52 zips (38 at 10m, 14 at 50m), 6,699,100,477 bytes
+    downloaded: false
+    why: over the 2 GB limit set for this collection
+
+versions:
+  release_directory: v5.1.2 (the GitHub release the layer list comes from)
+  declared_by_zips: {"5.1.1": 69, "4.1.0": 65, "5.0.0": 42, "5.1.0": 18, "5.1.2": 7, "5.0.0-pre9": 6, "2.0.0": 2, "none": 6}
+  note: |
+    The CDN URLs carry no version. Each zip declares its own in
+    <layer>.VERSION.txt, recorded per zip in MANIFEST.json and per layer
+    below and in the Parquet key-value metadata. Six layers taken from theme
+    packages have no VERSION.txt of their own. The download pages state a
+    version next to each link, which often differs from the zip's (53
+    layers say 4.0.0 on the page and 4.1.0 in the zip); also recorded.
+
+counts:
+  features: 357763
+  parquet_bytes: 450266709
+  geometry_types: {LINESTRING: 172443, POLYGON: 109486, POINT: 58541, MULTIPOLYGON: 9231, MULTILINESTRING: 7529}
+  geometry_invalid: 2445 in 58 layers (2238 of them in ne_10m_urban_areas_landscan)
+  geometry_null: 533 in 7 layers (all 505 of ne_10m_admin_0_names, which is an attribute-only table)
+  geometry_empty: 0
+  cells_compared: 11756311
+
+checked:
+  note: scripts/02_verify.py, before upload
+  items:
+    - every zip against MANIFEST.json (size and sha256), read to the end with zipfile.testzip
+    - every layer in the zip the manifest assigns it to
+    - feature counts equal in .dbf, .shx and Parquet for all 215 layers; no deleted .dbf records
+    - columns are the .dbf fields in order, then geometry; types as the .dbf definitions give
+    - all 11,756,311 attribute cells equal an independent Python reading of the .dbf
+    - every geometry's WKB equals GDAL's reading of the .shp
+    - GeoParquet 'geo' metadata names EPSG:4326 (the all-null layer carries it in the Parquet GEOMETRY logical type)
+    - invalid, null and empty geometries counted, not fixed
+
+modifications:
+  raw: none. The publisher's zips, byte for byte.
+  parquet:
+    - one file per layer; all .dbf fields kept, in order, under their names
+    - types from the .dbf field definitions (C VARCHAR; N without decimals INTEGER up to width 9, BIGINT up to 18; N with decimals and F DOUBLE; L BOOLEAN; D DATE)
+    - text decoded per .cpg (UTF-8, 178 layers); 37 layers have no .cpg, LDID 0, and every text value is valid UTF-8, so they are read as UTF-8
+    - text as GDAL reads it - cut at the first NUL (69 layers pad with NULs) and trimmed of leading and trailing spaces (6 values in ne_10m_rivers_lake_centerlines_scale_rank had a leading space); empty text, numbers and dates NULL
+    - geometry unchanged, typed GEOMETRY('EPSG:4326') from the .prj (GCS_WGS_1984); ne_10m_admin_0_names has no .prj, and no coordinates either
+    - GeoParquet 1.0 metadata, zstd, no bloom filters; key-value metadata natural_earth_layer, natural_earth_version, source_url, source_sha256
+
+# --- below this line is generated by scripts/04_card.py ---
+
+layers_v5_1_2:
+  ne_10m_admin_0_antarctic_claim_limit_lines:
+    zip: 10m/cultural/ne_10m_admin_0_antarctic_claim_limit_lines.zip
+    source: layer
+    zip_sha256: d95b94b5ed4024d8ba64b032db94af0dd683d2a93c18dcb060244a3e86483c31
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 23
+    fields: 5
+    geometry_types: {"LINESTRING": 23}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_antarctic_claim_limit_lines.parquet, bytes: 12806}
+  ne_10m_admin_0_antarctic_claims:
+    zip: 10m/cultural/ne_10m_admin_0_antarctic_claims.zip
+    source: layer
+    zip_sha256: 8336bea623dacc2b531246efa1358d9db9d5df97e2303e967191055db0ca6619
+    zip_last_modified: "Sat, 04 Sep 2021 05:49:15 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 10
+    fields: 8
+    geometry_types: {"MULTIPOLYGON": 2, "POLYGON": 8}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_antarctic_claims.parquet, bytes: 44217}
+  ne_10m_admin_0_boundary_lines_disputed_areas:
+    zip: 10m/cultural/ne_10m_admin_0_boundary_lines_disputed_areas.zip
+    source: layer
+    zip_sha256: d9eedd54bcc222d25a41438dc1c547a4034e787f228ad04273038995bca27301
+    zip_last_modified: "Fri, 13 May 2022 05:21:15 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 75
+    fields: 55
+    geometry_types: {"LINESTRING": 57, "MULTILINESTRING": 18}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_boundary_lines_disputed_areas.parquet, bytes: 67278}
+  ne_10m_admin_0_boundary_lines_land:
+    zip: 10m/cultural/ne_10m_admin_0_boundary_lines_land.zip
+    source: layer
+    zip_sha256: 16ead035f539c8b6c23650c5845d86ad3556553e7456bdf9b4730210f26aacbe
+    zip_last_modified: "Fri, 13 May 2022 05:21:14 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 515
+    fields: 54
+    geometry_types: {"LINESTRING": 165, "MULTILINESTRING": 350}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_boundary_lines_land.parquet, bytes: 1077039}
+  ne_10m_admin_0_boundary_lines_map_units:
+    zip: 10m/cultural/ne_10m_admin_0_boundary_lines_map_units.zip
+    source: layer
+    zip_sha256: f2f35731462f3cfffb7f7434f554b8432b743cf31972a58f9ed1d780d6fa0e8a
+    zip_last_modified: "Fri, 13 May 2022 05:21:14 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 15
+    fields: 44
+    geometry_types: {"LINESTRING": 15}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_boundary_lines_map_units.parquet, bytes: 40960}
+  ne_10m_admin_0_boundary_lines_maritime_indicator:
+    zip: 10m/cultural/ne_10m_admin_0_boundary_lines_maritime_indicator.zip
+    source: layer
+    zip_sha256: d5f6f171b9cc1fa6b06e68cbda0f4215c545c4a5e2aa5535e293fa3cc25c0773
+    zip_last_modified: "Fri, 13 May 2022 05:21:13 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 221
+    fields: 42
+    geometry_types: {"LINESTRING": 221}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_boundary_lines_maritime_indicator.parquet, bytes: 69016}
+  ne_10m_admin_0_boundary_lines_maritime_indicator_chn:
+    zip: 10m/cultural/ne_10m_admin_0_boundary_lines_maritime_indicator_chn.zip
+    source: layer
+    zip_sha256: f691e61db59d71ea8cc2c0121f890215f7279ade3a85c38e8e96960713212dfa
+    zip_last_modified: "Fri, 13 May 2022 05:21:11 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 9
+    fields: 42
+    geometry_types: {"LINESTRING": 9}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_boundary_lines_maritime_indicator_chn.parquet, bytes: 12402}
+  ne_10m_admin_0_countries:
+    zip: 10m/cultural/ne_10m_admin_0_countries.zip
+    source: layer
+    zip_sha256: ce1ac7036499a0edd641fbc093cd209a98f96a49d2eca8480aaacad35138a7f6
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 258
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 151, "POLYGON": 107}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries.parquet, bytes: 5043207}
+  ne_10m_admin_0_countries_arg:
+    zip: 10m/cultural/ne_10m_admin_0_countries_arg.zip
+    source: layer
+    zip_sha256: 357fbb518e4288d32734087c91ac9f27d630068f7f60552d225ff64a6c04ed12
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3931 non-ASCII)"
+    features: 246
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 98}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_arg.parquet, bytes: 5028374}
+  ne_10m_admin_0_countries_bdg:
+    zip: 10m/cultural/ne_10m_admin_0_countries_bdg.zip
+    source: layer
+    zip_sha256: 38dc28eea054c58cd828ca846cd08bd31007451b5c3591df0d73483d24380ed7
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3961 non-ASCII)"
+    features: 248
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 147, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_bdg.parquet, bytes: 5026038}
+  ne_10m_admin_0_countries_bra:
+    zip: 10m/cultural/ne_10m_admin_0_countries_bra.zip
+    source: layer
+    zip_sha256: 131c5102ecf8f87f8462bb2bb50d114e3d80c3076ad61bc29122ace3fb97186d
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3980 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_bra.parquet, bytes: 5026474}
+  ne_10m_admin_0_countries_chn:
+    zip: 10m/cultural/ne_10m_admin_0_countries_chn.zip
+    source: layer
+    zip_sha256: 16e7589083527d01208b9f645fc8643c767170258e9d13b59d37bc5a1f6a8758
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3928 non-ASCII)"
+    features: 246
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 146, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_chn.parquet, bytes: 5018395}
+  ne_10m_admin_0_countries_deu:
+    zip: 10m/cultural/ne_10m_admin_0_countries_deu.zip
+    source: layer
+    zip_sha256: 125fc4b1f425926b8bd22dce23af6f9f873543c2fe330915ccbe0aa7fa21ff82
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_deu.parquet, bytes: 5027341}
+  ne_10m_admin_0_countries_egy:
+    zip: 10m/cultural/ne_10m_admin_0_countries_egy.zip
+    source: layer
+    zip_sha256: 11a59f8d01367bfe49e1e65a04349dc670a4341ba9465683b10e70f34576f5ef
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3977 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_egy.parquet, bytes: 5027754}
+  ne_10m_admin_0_countries_esp:
+    zip: 10m/cultural/ne_10m_admin_0_countries_esp.zip
+    source: layer
+    zip_sha256: cc953fbb5ee827ca39d49940491fe48b3979a7ca4b10649c36d66948ad3ea7a0
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3982 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_esp.parquet, bytes: 5026980}
+  ne_10m_admin_0_countries_fra:
+    zip: 10m/cultural/ne_10m_admin_0_countries_fra.zip
+    source: layer
+    zip_sha256: e5537c00e42ef027db1be55f3cadaf97441a8edea7435c3731c742175267d48c
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3980 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_fra.parquet, bytes: 5025540}
+  ne_10m_admin_0_countries_gbr:
+    zip: 10m/cultural/ne_10m_admin_0_countries_gbr.zip
+    source: layer
+    zip_sha256: 23e586f7225a4a83b20178b78b8b8209b14bc6c385b09add44e3a2e50ac6dac3
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (4018 non-ASCII)"
+    features: 251
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 102}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_gbr.parquet, bytes: 5029347}
+  ne_10m_admin_0_countries_grc:
+    zip: 10m/cultural/ne_10m_admin_0_countries_grc.zip
+    source: layer
+    zip_sha256: dfb2253a2ee995a4f2a4ea9ae90c6b915080d85144be7a37971be33ca7096592
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3982 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_grc.parquet, bytes: 5027320}
+  ne_10m_admin_0_countries_idn:
+    zip: 10m/cultural/ne_10m_admin_0_countries_idn.zip
+    source: layer
+    zip_sha256: 358d61ae12a92f9d42bb2193877030b4bff1193ff967ce0f0d9edb51b60acfea
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3931 non-ASCII)"
+    features: 246
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 147, "POLYGON": 99}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_idn.parquet, bytes: 5020268}
+  ne_10m_admin_0_countries_ind:
+    zip: 10m/cultural/ne_10m_admin_0_countries_ind.zip
+    source: layer
+    zip_sha256: 36a54ee97a509325e98eb44fd91bc7e53b0c5139cf10039918042bbd64102192
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3966 non-ASCII)"
+    features: 248
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 99}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_ind.parquet, bytes: 5040767}
+  ne_10m_admin_0_countries_iso:
+    zip: 10m/cultural/ne_10m_admin_0_countries_iso.zip
+    source: layer
+    zip_sha256: 9a097f5c5fe0cd2e0f1f120a507f9f8e421c6ff7e20a2e4c8621311081b55453
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3984 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 152, "POLYGON": 97}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_iso.parquet, bytes: 5006692}
+  ne_10m_admin_0_countries_isr:
+    zip: 10m/cultural/ne_10m_admin_0_countries_isr.zip
+    source: layer
+    zip_sha256: 36c2af239f9a04d2d104e893ce82ca52fea7dafbceac91a09be5b9c0569ecf68
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_isr.parquet, bytes: 5028649}
+  ne_10m_admin_0_countries_ita:
+    zip: 10m/cultural/ne_10m_admin_0_countries_ita.zip
+    source: layer
+    zip_sha256: 76f28332474ffdd7717fc67dcd8f0b2086eb8405c71fa47bf857ff42642a9615
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_ita.parquet, bytes: 5030113}
+  ne_10m_admin_0_countries_jpn:
+    zip: 10m/cultural/ne_10m_admin_0_countries_jpn.zip
+    source: layer
+    zip_sha256: d9dde4daa1b51fef2ee76b7e7ab86eb0f5deffc6bacb64dd9cacdd6cec6e880c
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_jpn.parquet, bytes: 5030833}
+  ne_10m_admin_0_countries_kor:
+    zip: 10m/cultural/ne_10m_admin_0_countries_kor.zip
+    source: layer
+    zip_sha256: 4d7d99017cc81e5825295e781c21361c3f3b86b702d515302770924cf0c4cbf8
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_kor.parquet, bytes: 5029823}
+  ne_10m_admin_0_countries_lakes:
+    zip: 10m/cultural/ne_10m_admin_0_countries_lakes.zip
+    source: layer
+    zip_sha256: 3f1596b05b4a19bd97f3a54731497cffbb4dbed4cda494084e73dd6dd3d37264
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 258
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 152, "POLYGON": 106}
+    geometry_invalid: 2
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_lakes.parquet, bytes: 5231536}
+  ne_10m_admin_0_countries_mar:
+    zip: 10m/cultural/ne_10m_admin_0_countries_mar.zip
+    source: layer
+    zip_sha256: 9956aa888e35c4ca8d8d10a918469b3695316cfc6528d41d48bbfbeff19f3d4b
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3947 non-ASCII)"
+    features: 247
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 98}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_mar.parquet, bytes: 5022798}
+  ne_10m_admin_0_countries_nep:
+    zip: 10m/cultural/ne_10m_admin_0_countries_nep.zip
+    source: layer
+    zip_sha256: 4755295da115a74668886f37db1b8a6b631a28e5c30a5cf7e47d799565a6d365
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3963 non-ASCII)"
+    features: 248
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_nep.parquet, bytes: 5044015}
+  ne_10m_admin_0_countries_nld:
+    zip: 10m/cultural/ne_10m_admin_0_countries_nld.zip
+    source: layer
+    zip_sha256: 19f257724022f2c694e80f52c7e3263da75ec0f0f0c7a39ae22bd5672a492375
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3980 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_nld.parquet, bytes: 5028576}
+  ne_10m_admin_0_countries_pak:
+    zip: 10m/cultural/ne_10m_admin_0_countries_pak.zip
+    source: layer
+    zip_sha256: cb6730734f7ffd64a087ec8cd801291ddf4507611c9902bd800362f2813a653b
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3961 non-ASCII)"
+    features: 248
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 147, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_pak.parquet, bytes: 5027632}
+  ne_10m_admin_0_countries_pol:
+    zip: 10m/cultural/ne_10m_admin_0_countries_pol.zip
+    source: layer
+    zip_sha256: eef38fb79a91f9d26e1645f761dfafe9550ec217c73ac443f824581d42f5f197
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3980 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_pol.parquet, bytes: 5028576}
+  ne_10m_admin_0_countries_prt:
+    zip: 10m/cultural/ne_10m_admin_0_countries_prt.zip
+    source: layer
+    zip_sha256: b1ca5db9522ba7d249b62fec5bab48afed74b42fbbcc79743a9722b7d8dcc35b
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_prt.parquet, bytes: 5030109}
+  ne_10m_admin_0_countries_pse:
+    zip: 10m/cultural/ne_10m_admin_0_countries_pse.zip
+    source: layer
+    zip_sha256: 8a69cbfe9402ac5bbd6e24e81cce6950137e0d7524023df9f5cfbd467bfdc976
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3966 non-ASCII)"
+    features: 257
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 152, "POLYGON": 105}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_pse.parquet, bytes: 5029977}
+  ne_10m_admin_0_countries_rus:
+    zip: 10m/cultural/ne_10m_admin_0_countries_rus.zip
+    source: layer
+    zip_sha256: 8309218a2d9b0b2a7f218a03fa05825a7757390ccec4d793e6e8e6a6015dd04d
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3979 non-ASCII)"
+    features: 257
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 109}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_rus.parquet, bytes: 5060954}
+  ne_10m_admin_0_countries_sau:
+    zip: 10m/cultural/ne_10m_admin_0_countries_sau.zip
+    source: layer
+    zip_sha256: 36191159ec58c7beaca1e2508cef84155b9dccba143d621ee336b60b81e786c0
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3980 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_sau.parquet, bytes: 5023185}
+  ne_10m_admin_0_countries_swe:
+    zip: 10m/cultural/ne_10m_admin_0_countries_swe.zip
+    source: layer
+    zip_sha256: 6ff518e3d0079108fc12996a72352d30c86b251431ec506b6573a1eebd9d6bc6
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3996 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 101}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_swe.parquet, bytes: 5030113}
+  ne_10m_admin_0_countries_tlc:
+    zip: 10m/cultural/ne_10m_admin_0_countries_tlc.zip
+    source: layer
+    zip_sha256: 07b9ea4ffe9daa6b5280dc3c3343d176db5c05c77e4975918501356ca2080ce4
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (5395 non-ASCII)"
+    features: 333
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 179, "POLYGON": 154}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_tlc.parquet, bytes: 5118923}
+  ne_10m_admin_0_countries_tur:
+    zip: 10m/cultural/ne_10m_admin_0_countries_tur.zip
+    source: layer
+    zip_sha256: 2019fd24f5ac8dc68b90a2f26e236e5e1f5bd97b75e7e88520c3f20ac22e7fde
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (4000 non-ASCII)"
+    features: 250
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 150, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_tur.parquet, bytes: 5035795}
+  ne_10m_admin_0_countries_twn:
+    zip: 10m/cultural/ne_10m_admin_0_countries_twn.zip
+    source: layer
+    zip_sha256: 5a3a14498c8fed258452de9e207d5e226b6fd279a43ff191897674708c219e9b
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3978 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 147, "POLYGON": 102}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_twn.parquet, bytes: 5024865}
+  ne_10m_admin_0_countries_ukr:
+    zip: 10m/cultural/ne_10m_admin_0_countries_ukr.zip
+    source: layer
+    zip_sha256: 6fcdaed26c8d551018fbd3b97185df863a4f15f489e602fceae1dee90d6a5ae8
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3982 non-ASCII)"
+    features: 249
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_ukr.parquet, bytes: 5024785}
+  ne_10m_admin_0_countries_usa:
+    zip: 10m/cultural/ne_10m_admin_0_countries_usa.zip
+    source: layer
+    zip_sha256: 4dd67d07246421372a3ea069d0b58b8ae28fe42c6a787a18411025b68f614d03
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (4032 non-ASCII)"
+    features: 252
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 149, "POLYGON": 103}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_usa.parquet, bytes: 5031923}
+  ne_10m_admin_0_countries_vnm:
+    zip: 10m/cultural/ne_10m_admin_0_countries_vnm.zip
+    source: layer
+    zip_sha256: 09e8e8d4fa210d8d8b5d8d0c988bf3e2ff37beda138ac97af2b044b7859ef7a2
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (3967 non-ASCII)"
+    features: 248
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 148, "POLYGON": 100}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_countries_vnm.parquet, bytes: 5026539}
+  ne_10m_admin_0_disputed_areas:
+    zip: 10m/cultural/ne_10m_admin_0_disputed_areas.zip
+    source: layer
+    zip_sha256: a250c1cf8ab68898399928a1fa1d5c242eb4de6335cb51a7f7a7f12a9f3c8438
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 99
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 27, "POLYGON": 72}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_disputed_areas.parquet, bytes: 247414}
+  ne_10m_admin_0_disputed_areas_scale_rank_minor_islands:
+    zip: 10m/cultural/ne_10m_admin_0_disputed_areas_scale_rank_minor_islands.zip
+    source: layer
+    zip_sha256: f6e8852d5ee2d583a88ccb136186fe95203adad721e28823e84ad8239bbbc4ec
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 298
+    fields: 9
+    geometry_types: {"POLYGON": 298}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_disputed_areas_scale_rank_minor_islands.parquet, bytes: 166672}
+  ne_10m_admin_0_label_points:
+    zip: 10m/cultural/ne_10m_admin_0_label_points.zip
+    source: layer
+    zip_sha256: 5b3fe5b5c31e69d44ce4c60026e85241e8c9a82619d8df620a1941d3819afac3
+    zip_last_modified: "Fri, 13 May 2022 05:21:11 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 7124
+    fields: 9
+    geometry_types: {"POINT": 7124}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_label_points.parquet, bytes: 126765}
+  ne_10m_admin_0_map_subunits:
+    zip: 10m/cultural/ne_10m_admin_0_map_subunits.zip
+    source: layer
+    zip_sha256: c2fd677e0ef254d7d6d37c92f9779a0ff69c2ab66f503dbe2a6f0cf4bbd8a199
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 360
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 192, "POLYGON": 168}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_map_subunits.parquet, bytes: 5133516}
+  ne_10m_admin_0_map_units:
+    zip: 10m/cultural/ne_10m_admin_0_map_units.zip
+    source: layer
+    zip_sha256: 45bebe2aaf8bf42b9daf4428594925bcb11eabd32fe9dc6e0acf681438053eb5
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 298
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 169, "POLYGON": 129}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_map_units.parquet, bytes: 5103110}
+  ne_10m_admin_0_names:
+    zip: 10m/cultural/10m_cultural.zip
+    source: theme package
+    zip_sha256: 5babdcbcd2ffa574e3924754966fc657bd493b6a3dfcc878f14305e017a8c239
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 505
+    fields: 159
+    geometry_types: {}
+    geometry_invalid: 0
+    geometry_null: 505
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_names.parquet, bytes: 231576}
+  ne_10m_admin_0_pacific_groupings:
+    zip: 10m/cultural/ne_10m_admin_0_pacific_groupings.zip
+    source: layer
+    zip_sha256: b012aaf85fc761d89e491aff755e3cc29fe0194ab07230dd22c78d840f65df38
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:15 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 63
+    fields: 4
+    geometry_types: {"LINESTRING": 63}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_pacific_groupings.parquet, bytes: 20485}
+  ne_10m_admin_0_scale_rank:
+    zip: 10m/cultural/ne_10m_admin_0_scale_rank.zip
+    source: layer
+    zip_sha256: c3ec803d3c766ebb794c5a471de9c2c01f09fc60f67360a7d08f94f4a4dc89b2
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4352
+    fields: 9
+    geometry_types: {"POLYGON": 4352}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_scale_rank.parquet, bytes: 5030983}
+  ne_10m_admin_0_scale_rank_minor_islands:
+    zip: 10m/cultural/ne_10m_admin_0_scale_rank_minor_islands.zip
+    source: layer
+    zip_sha256: aaf641befd3237f2fcba81d5ad2693d0bb5062b00db619b32c249f73ca25e854
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 7146
+    fields: 9
+    geometry_types: {"POLYGON": 7146}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_scale_rank_minor_islands.parquet, bytes: 5338249}
+  ne_10m_admin_0_seams:
+    zip: 10m/cultural/ne_10m_admin_0_seams.zip
+    source: layer
+    zip_sha256: c24d0f4decb45644d300eed91edcdbb29e892be3f5728f1b04c5337d98163588
+    zip_last_modified: "Sat, 04 Sep 2021 05:49:41 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 26
+    fields: 2
+    geometry_types: {"LINESTRING": 26}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_seams.parquet, bytes: 15038}
+  ne_10m_admin_0_sovereignty:
+    zip: 10m/cultural/ne_10m_admin_0_sovereignty.zip
+    source: layer
+    zip_sha256: a0e01dfa76ad1f447e6a3393b0dd4d2de882423eb9d173320cd8331fa9127092
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 209
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 121, "POLYGON": 88}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_0_sovereignty.parquet, bytes: 5026498}
+  ne_10m_admin_1_label_points:
+    zip: 10m/cultural/ne_10m_admin_1_label_points.zip
+    source: layer
+    zip_sha256: d39e236e2a0104427760a41a1a95714f3121a4d04339865a0c3910c3156a4bdb
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:59 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 11291
+    fields: 13
+    geometry_types: {"POINT": 11291}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_label_points.parquet, bytes: 302603}
+  ne_10m_admin_1_label_points_details:
+    zip: 10m/cultural/ne_10m_admin_1_label_points_details.zip
+    source: layer
+    zip_sha256: c139e66ddecebd403cab1a08fe25ecf4f26d042c0b5cabd55cc196f6c29202a3
+    zip_last_modified: "Fri, 13 May 2022 05:20:52 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4650
+    fields: 121
+    geometry_types: {"POINT": 4650}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_label_points_details.parquet, bytes: 1480413}
+  ne_10m_admin_1_seams:
+    zip: 10m/cultural/ne_10m_admin_1_seams.zip
+    source: layer
+    zip_sha256: 3e0c4b2dbbb02ad015dd6958f00f8f12e03cfb9bd75b02471c573b85d6f25d0f
+    zip_last_modified: "Sat, 04 Sep 2021 05:49:46 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 12
+    fields: 2
+    geometry_types: {"LINESTRING": 12}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_seams.parquet, bytes: 6961}
+  ne_10m_admin_1_states_provinces:
+    zip: 10m/cultural/ne_10m_admin_1_states_provinces.zip
+    source: layer
+    zip_sha256: efc59726337323058f9446210adc96673179cd344e053666ee3d28cb58ba2b05
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4596
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 651, "POLYGON": 3945}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_states_provinces.parquet, bytes: 14716138}
+  ne_10m_admin_1_states_provinces_lakes:
+    zip: 10m/cultural/ne_10m_admin_1_states_provinces_lakes.zip
+    source: layer
+    zip_sha256: 7c41f8aa2827c6cfbd458faff584119bb3a628047f0c4b45cff5fa071cc8a11b
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4596
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 672, "POLYGON": 3924}
+    geometry_invalid: 2
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_states_provinces_lakes.parquet, bytes: 14884644}
+  ne_10m_admin_1_states_provinces_lines:
+    zip: 10m/cultural/ne_10m_admin_1_states_provinces_lines.zip
+    source: layer
+    zip_sha256: 86acd56ce6c0e47f5fa79725591533b5766f26d6ed1437b086f2b8d4028fe456
+    zip_last_modified: "Fri, 13 May 2022 05:21:09 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 10179
+    fields: 57
+    geometry_types: {"LINESTRING": 4388, "MULTILINESTRING": 5790}
+    geometry_invalid: 0
+    geometry_null: 1
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_states_provinces_lines.parquet, bytes: 5934876}
+  ne_10m_admin_1_states_provinces_scale_rank:
+    zip: 10m/cultural/ne_10m_admin_1_states_provinces_scale_rank.zip
+    source: layer
+    zip_sha256: ae0debd4f527c79a6e1595b8f75d104546fc833bf5af74789f31a4475c145f78
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 8544
+    fields: 13
+    geometry_types: {"POLYGON": 8544}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_states_provinces_scale_rank.parquet, bytes: 13380755}
+  ne_10m_admin_1_states_provinces_scale_rank_minor_islands:
+    zip: 10m/cultural/10m_cultural.zip
+    source: theme package
+    zip_sha256: 5babdcbcd2ffa574e3924754966fc657bd493b6a3dfcc878f14305e017a8c239
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 11291
+    fields: 13
+    geometry_types: {"POLYGON": 11291}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_1_states_provinces_scale_rank_minor_islands.parquet, bytes: 13691528}
+  ne_10m_admin_2_counties:
+    zip: 10m/cultural/ne_10m_admin_2_counties.zip
+    source: layer
+    zip_sha256: ecd4881eb618ab623d522f25ab16efe7c984b35890586b5f5646df020d2ab2be
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3224
+    fields: 61
+    geometry_types: {"MULTIPOLYGON": 112, "POLYGON": 3112}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties.parquet, bytes: 1790779}
+  ne_10m_admin_2_counties_lakes:
+    zip: 10m/cultural/ne_10m_admin_2_counties_lakes.zip
+    source: layer
+    zip_sha256: 1a1d75c4cdedadfd27cb9aff06ababb6c5b6d00f6ed0d5ca6fe186bbfd2f4e24
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3224
+    fields: 61
+    geometry_types: {"MULTIPOLYGON": 127, "POLYGON": 3097}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties_lakes.parquet, bytes: 1817812}
+  ne_10m_admin_2_counties_lines:
+    zip: 10m/cultural/10m_cultural.zip
+    source: theme package
+    zip_sha256: 5babdcbcd2ffa574e3924754966fc657bd493b6a3dfcc878f14305e017a8c239
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 8155
+    fields: 49
+    geometry_types: {"LINESTRING": 8154}
+    geometry_invalid: 0
+    geometry_null: 1
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties_lines.parquet, bytes: 656842}
+  ne_10m_admin_2_counties_scale_rank:
+    zip: 10m/cultural/ne_10m_admin_2_counties_scale_rank.zip
+    source: layer
+    zip_sha256: 5593a139912c6251dc8a9c61c53b72e5b8f972d0613cb6b696bc051126304513
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (9 non-ASCII)"
+    features: 3610
+    fields: 10
+    geometry_types: {"POLYGON": 3610}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties_scale_rank.parquet, bytes: 1303061}
+  ne_10m_admin_2_counties_scale_rank_minor_islands:
+    zip: 10m/cultural/ne_10m_admin_2_counties_scale_rank_minor_islands.zip
+    source: layer
+    zip_sha256: 1ac5aab7ca7938f0cf58cda06edde5028b1943db3c9018e5ccef48d599290251
+    zip_last_modified: "Fri, 13 May 2022 05:20:49 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (9 non-ASCII)"
+    features: 3610
+    fields: 10
+    geometry_types: {"POLYGON": 3610}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties_scale_rank_minor_islands.parquet, bytes: 1303089}
+  ne_10m_admin_2_counties_to_match:
+    zip: 10m/cultural/10m_cultural.zip
+    source: theme package
+    zip_sha256: 5babdcbcd2ffa574e3924754966fc657bd493b6a3dfcc878f14305e017a8c239
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3225
+    fields: 33
+    geometry_types: {"MULTIPOLYGON": 130, "POLYGON": 3095}
+    geometry_invalid: 22
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_counties_to_match.parquet, bytes: 1491482}
+  ne_10m_admin_2_label_points:
+    zip: 10m/cultural/ne_10m_admin_2_label_points.zip
+    source: layer
+    zip_sha256: 29dc2c281978cb4c59f363a61fab9291ebe47609e4effbfe8f3bc9836b9c2ab7
+    zip_last_modified: "Wed, 08 Dec 2021 00:45:00 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "5.0.0"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (9 non-ASCII)"
+    features: 3612
+    fields: 10
+    geometry_types: {"POINT": 3611}
+    geometry_invalid: 0
+    geometry_null: 1
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_label_points.parquet, bytes: 75458}
+  ne_10m_admin_2_label_points_details:
+    zip: 10m/cultural/ne_10m_admin_2_label_points_details.zip
+    source: layer
+    zip_sha256: 41f689c7acd84bc6ff3d17d5948252ad5a3fabd72d89ddb7382893af895b6927
+    zip_last_modified: "Wed, 08 Dec 2021 00:45:00 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3224
+    fields: 61
+    geometry_types: {"POINT": 3224}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_admin_2_label_points_details.parquet, bytes: 532954}
+  ne_10m_airports:
+    zip: 10m/cultural/ne_10m_airports.zip
+    source: layer
+    zip_sha256: a29e335cb67e1e4c131ded1772e0d7074cf1c677bd27d25cf2f2c440c27d7db3
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:13 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 893
+    fields: 40
+    geometry_types: {"POINT": 893}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_airports.parquet, bytes: 229203}
+  ne_10m_parks_and_protected_lands_area:
+    zip: 10m/cultural/ne_10m_parks_and_protected_lands.zip
+    source: bundle
+    zip_sha256: 278c21bd62f58ef27df1aa161a5af076308b5bb8306699eced40d56ebe073f71
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 61
+    fields: 8
+    geometry_types: {"MULTIPOLYGON": 17, "POLYGON": 44}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_parks_and_protected_lands_area.parquet, bytes: 47040}
+  ne_10m_parks_and_protected_lands_line:
+    zip: 10m/cultural/ne_10m_parks_and_protected_lands.zip
+    source: bundle
+    zip_sha256: 278c21bd62f58ef27df1aa161a5af076308b5bb8306699eced40d56ebe073f71
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 29
+    fields: 8
+    geometry_types: {"LINESTRING": 17, "MULTILINESTRING": 12}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_parks_and_protected_lands_line.parquet, bytes: 23906}
+  ne_10m_parks_and_protected_lands_point:
+    zip: 10m/cultural/ne_10m_parks_and_protected_lands.zip
+    source: bundle
+    zip_sha256: 278c21bd62f58ef27df1aa161a5af076308b5bb8306699eced40d56ebe073f71
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 315
+    fields: 7
+    geometry_types: {"POINT": 315}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_parks_and_protected_lands_point.parquet, bytes: 15365}
+  ne_10m_parks_and_protected_lands_scale_rank:
+    zip: 10m/cultural/ne_10m_parks_and_protected_lands.zip
+    source: bundle
+    zip_sha256: 278c21bd62f58ef27df1aa161a5af076308b5bb8306699eced40d56ebe073f71
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 110
+    fields: 8
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 109}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_parks_and_protected_lands_scale_rank.parquet, bytes: 47024}
+  ne_10m_populated_places:
+    zip: 10m/cultural/ne_10m_populated_places.zip
+    source: layer
+    zip_sha256: cd149186f03d2603e0410da399b980a4357d0ac32d3a2305a49ed3dffcc41d7b
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 7342
+    fields: 137
+    geometry_types: {"POINT": 7342}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_populated_places.parquet, bytes: 2309795}
+  ne_10m_populated_places_simple:
+    zip: 10m/cultural/ne_10m_populated_places_simple.zip
+    source: layer
+    zip_sha256: 2963ee08f7743f13f37d5243acd77a2f7a510e26a36c7e04b920f1b381f2b251
+    zip_last_modified: "Fri, 13 May 2022 23:11:17 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 7342
+    fields: 31
+    geometry_types: {"POINT": 7342}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_populated_places_simple.parquet, bytes: 487424}
+  ne_10m_ports:
+    zip: 10m/cultural/ne_10m_ports.zip
+    source: layer
+    zip_sha256: 1824cccd897a6c2ad546abbaf1f3545d51cff4bddfbda40244a1ad1ab1e4371d
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:13 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1081
+    fields: 6
+    geometry_types: {"POINT": 1081}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_ports.parquet, bytes: 31936}
+  ne_10m_railroads:
+    zip: 10m/cultural/ne_10m_railroads.zip
+    source: layer
+    zip_sha256: 0bce64d1bb7ce1178810f0a341322b0459acb0689a61016259ef38f75abed0a4
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:06 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 25413
+    fields: 12
+    geometry_types: {"LINESTRING": 25413}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_railroads.parquet, bytes: 14438322}
+  ne_10m_railroads_north_america:
+    zip: 10m/cultural/ne_10m_railroads_north_america.zip
+    source: layer
+    zip_sha256: 13d6888338dd2c5453fa3a8e48efc3286acf3d4a51a71fcdade809d099261b2b
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:08 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1127
+    fields: 7
+    geometry_types: {"LINESTRING": 1127}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_railroads_north_america.parquet, bytes: 320153}
+  ne_10m_roads:
+    zip: 10m/cultural/ne_10m_roads.zip
+    source: layer
+    zip_sha256: 880b235383a1e1ccf33f4ea6f82b6755a2ffbce07e3974e412b43e88fe954ae9
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 56600
+    fields: 31
+    geometry_types: {"LINESTRING": 56570, "MULTILINESTRING": 30}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_roads.parquet, bytes: 6331310}
+  ne_10m_roads_north_america:
+    zip: 10m/cultural/ne_10m_roads_north_america.zip
+    source: layer
+    zip_sha256: 108b2e2aad60e5ac6b8c27ee074b4b147ffd1c02b14e7a0d41e1d030bd737c63
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:12 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 49183
+    fields: 13
+    geometry_types: {"LINESTRING": 48934, "MULTILINESTRING": 249}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_roads_north_america.parquet, bytes: 50683036}
+  ne_10m_time_zones:
+    zip: 10m/cultural/ne_10m_time_zones.zip
+    source: layer
+    zip_sha256: 0b038d1198eeec0b35487dd4cc4a2ea859f9776825f2fb9340b9da455d697984
+    zip_last_modified: "Wed, 08 Dec 2021 00:44:12 GMT"
+    declared_version: "5.0.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 120
+    fields: 15
+    geometry_types: {"MULTIPOLYGON": 4, "POLYGON": 116}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_time_zones.parquet, bytes: 1786229}
+  ne_10m_urban_areas:
+    zip: 10m/cultural/ne_10m_urban_areas.zip
+    source: layer
+    zip_sha256: 2c593114e954ce1adb297ddee5465f05d9e81fa0a26deb13f8500d58a00d7051
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:16 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 11878
+    fields: 4
+    geometry_types: {"POLYGON": 11878}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_urban_areas.parquet, bytes: 14223101}
+  ne_10m_urban_areas_landscan:
+    zip: 10m/cultural/ne_10m_urban_areas_landscan.zip
+    source: layer
+    zip_sha256: 0508c99929d366e8b2b67e862a5b1280ed79d5bc3d8d7cb66e31f921a47ffd9b
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:18 GMT"
+    declared_version: "4.1.0"
+    page_version: null
+    encoding: "from .cpg 'UTF-8'"
+    features: 6018
+    fields: 25
+    geometry_types: {"MULTIPOLYGON": 108, "POLYGON": 5910}
+    geometry_invalid: 2238
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_cultural/ne_10m_urban_areas_landscan.parquet, bytes: 13551446}
+  ne_10m_antarctic_ice_shelves_lines:
+    zip: 10m/physical/ne_10m_antarctic_ice_shelves_lines.zip
+    source: layer
+    zip_sha256: e52aca439513fedbc9f5e2cd17446e4c366e616cc1d553627a975929256ac6ef
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:25 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 160
+    fields: 3
+    geometry_types: {"LINESTRING": 145, "MULTILINESTRING": 15}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_antarctic_ice_shelves_lines.parquet, bytes: 100549}
+  ne_10m_antarctic_ice_shelves_polys:
+    zip: 10m/physical/ne_10m_antarctic_ice_shelves_polys.zip
+    source: layer
+    zip_sha256: 1d421d2487e2721a6e0aee8187e008c9bd8f0adbf4a5297b8503f7bf3c30b04d
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:27 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 159
+    fields: 5
+    geometry_types: {"MULTIPOLYGON": 5, "POLYGON": 154}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_antarctic_ice_shelves_polys.parquet, bytes: 152975}
+  ne_10m_bathymetry_A_10000:
+    zip: 10m/physical/ne_10m_bathymetry_A_10000.zip
+    source: layer
+    zip_sha256: 05a8850d2f93052136beb547bb1cd0ce243df9fcc675ed422aaec17108f64537
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:28 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3
+    fields: 3
+    geometry_types: {"POLYGON": 3}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_A_10000.parquet, bytes: 3128}
+  ne_10m_bathymetry_B_9000:
+    zip: 10m/physical/ne_10m_bathymetry_B_9000.zip
+    source: layer
+    zip_sha256: e6344311f1af5fc4aacf39c6ed3aa857b288ec359db9aa59dbce4a54424c62a5
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:30 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 22
+    fields: 3
+    geometry_types: {"POLYGON": 22}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_B_9000.parquet, bytes: 6779}
+  ne_10m_bathymetry_C_8000:
+    zip: 10m/physical/ne_10m_bathymetry_C_8000.zip
+    source: layer
+    zip_sha256: cd307b95888762d98d7aebd7eae7f6c7e2c62922d2a0b24d7b4c550fd7efd85d
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:31 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 15
+    fields: 3
+    geometry_types: {"POLYGON": 15}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_C_8000.parquet, bytes: 11870}
+  ne_10m_bathymetry_D_7000:
+    zip: 10m/physical/ne_10m_bathymetry_D_7000.zip
+    source: layer
+    zip_sha256: 9dae679eed06fb24f25f4c659fb0a2e6d5aa0b057737eb491cd325932bed6f42
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:33 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 59
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 2, "POLYGON": 57}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_D_7000.parquet, bytes: 28917}
+  ne_10m_bathymetry_E_6000:
+    zip: 10m/physical/ne_10m_bathymetry_E_6000.zip
+    source: layer
+    zip_sha256: 6bdfb0255a3356b4261b9934125e35226a0487b0c11234c1563bb856cac95b88
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:34 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 521
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 30, "POLYGON": 491}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_E_6000.parquet, bytes: 269482}
+  ne_10m_bathymetry_F_5000:
+    zip: 10m/physical/ne_10m_bathymetry_F_5000.zip
+    source: layer
+    zip_sha256: d33247a325f31f5a7caeb7b9d963a8c1b6cb0576a8c26ebd7bd50f4dcc0ccaaf
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:36 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1862
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 155, "POLYGON": 1707}
+    geometry_invalid: 51
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_F_5000.parquet, bytes: 2880003}
+  ne_10m_bathymetry_G_4000:
+    zip: 10m/physical/ne_10m_bathymetry_G_4000.zip
+    source: layer
+    zip_sha256: 466486cedef079608abe20fa832e542b6abc92bb5ca40c0f6e587ed7f7be95bd
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:38 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1725
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 109, "POLYGON": 1616}
+    geometry_invalid: 33
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_G_4000.parquet, bytes: 3618599}
+  ne_10m_bathymetry_H_3000:
+    zip: 10m/physical/ne_10m_bathymetry_H_3000.zip
+    source: layer
+    zip_sha256: 5f0d480ffbd7a1dc39c48a9c29164b1a92094225d1d0399ab67ea61581add98a
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:40 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 671
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 35, "POLYGON": 636}
+    geometry_invalid: 21
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_H_3000.parquet, bytes: 2537646}
+  ne_10m_bathymetry_I_2000:
+    zip: 10m/physical/ne_10m_bathymetry_I_2000.zip
+    source: layer
+    zip_sha256: e1e58ab0ae062e612835412f8e309bd46103b26196a0423514282a7e3e1f3265
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:41 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 202
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 8, "POLYGON": 194}
+    geometry_invalid: 8
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_I_2000.parquet, bytes: 1285172}
+  ne_10m_bathymetry_J_1000:
+    zip: 10m/physical/ne_10m_bathymetry_J_1000.zip
+    source: layer
+    zip_sha256: ff586fb1faf86c9917519577f1490a2106d7c45a456053374731f59aac0211e5
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:43 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 157
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 156}
+    geometry_invalid: 5
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_J_1000.parquet, bytes: 750329}
+  ne_10m_bathymetry_K_200:
+    zip: 10m/physical/ne_10m_bathymetry_K_200.zip
+    source: layer
+    zip_sha256: 68fe55b9ac57bd8255696d83259f5856594a60c582dd395de9c1772179337887
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:45 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 520
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 2, "POLYGON": 518}
+    geometry_invalid: 10
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_K_200.parquet, bytes: 1186947}
+  ne_10m_bathymetry_L_0:
+    zip: 10m/physical/ne_10m_bathymetry_L_0.zip
+    source: layer
+    zip_sha256: 3a950927bde293cd7a59e2618a9ee99cff1ad8422a886e9e8b47538a1de6f36b
+    zip_last_modified: "Sat, 04 Sep 2021 05:50:47 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 22
+    fields: 3
+    geometry_types: {"POLYGON": 22}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_bathymetry_L_0.parquet, bytes: 3202395}
+  ne_10m_coastline:
+    zip: 10m/physical/ne_10m_coastline.zip
+    source: layer
+    zip_sha256: bfa04cdbcbef07ef90dfca1dabb48062eca29900a113df0f389303e255484017
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:48 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4133
+    fields: 3
+    geometry_types: {"LINESTRING": 4133}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_coastline.parquet, bytes: 3175146}
+  ne_10m_geographic_lines:
+    zip: 10m/physical/ne_10m_geographic_lines.zip
+    source: layer
+    zip_sha256: ecde48e336ba45fecc56c3bc8cc6d5075f2c4f7f856fb844e0e76a59256e6037
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:47 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 6
+    fields: 36
+    geometry_types: {"LINESTRING": 5, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_geographic_lines.parquet, bytes: 28749}
+  ne_10m_geography_marine_polys:
+    zip: 10m/physical/ne_10m_geography_marine_polys.zip
+    source: layer
+    zip_sha256: a2d3395904c41e718e02c3ec5bc988712164c524c236fad32d95d282ca303b2a
+    zip_last_modified: "Fri, 13 May 2022 05:21:36 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 306
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 16, "POLYGON": 290}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_geography_marine_polys.parquet, bytes: 930294}
+  ne_10m_geography_regions_elevation_points:
+    zip: 10m/physical/ne_10m_geography_regions_elevation_points.zip
+    source: layer
+    zip_sha256: c7465b5df43045c3b639ab26ce61128273c2391b597074077a55f06fe63e1c99
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:47 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 711
+    fields: 43
+    geometry_types: {"POINT": 711}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_geography_regions_elevation_points.parquet, bytes: 193613}
+  ne_10m_geography_regions_points:
+    zip: 10m/physical/ne_10m_geography_regions_points.zip
+    source: layer
+    zip_sha256: 2cf54b21fc684f0f7023886379c7ae9c5c716d8bd4c3ead19050f3a7f53e4f7d
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:47 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 235
+    fields: 39
+    geometry_types: {"POINT": 235}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_geography_regions_points.parquet, bytes: 73704}
+  ne_10m_geography_regions_polys:
+    zip: 10m/physical/ne_10m_geography_regions_polys.zip
+    source: layer
+    zip_sha256: cb7b9db200284ed1551f20eacc7f3333e9b5f311c19f7cb2670694529f688682
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1047
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 162, "POLYGON": 885}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_geography_regions_polys.parquet, bytes: 1752655}
+  ne_10m_glaciated_areas:
+    zip: 10m/physical/ne_10m_glaciated_areas.zip
+    source: layer
+    zip_sha256: de6ff396ab7eee8cbe2146030cc29278ef67c468e5675c748b1372e241ecbbff
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:04 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1886
+    fields: 5
+    geometry_types: {"MULTIPOLYGON": 7, "POLYGON": 1879}
+    geometry_invalid: 3
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_glaciated_areas.parquet, bytes: 1659548}
+  ne_10m_graticules_1:
+    zip: 10m/physical/ne_10m_graticules_1.zip
+    source: layer
+    zip_sha256: 39f6f7bf67ec82cf8121c911b0350aae45ea363c94d2ddfd98b39414b827337c
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:05 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 539
+    fields: 5
+    geometry_types: {"LINESTRING": 539}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_1.parquet, bytes: 62640}
+  ne_10m_graticules_10:
+    zip: 10m/physical/ne_10m_graticules_10.zip
+    source: layer
+    zip_sha256: 49b65af92b1ef157daabd0ccc2dc3ff550e2320a09ddf9e588be4075329abedc
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:07 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 53
+    fields: 5
+    geometry_types: {"LINESTRING": 53}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_10.parquet, bytes: 19638}
+  ne_10m_graticules_15:
+    zip: 10m/physical/ne_10m_graticules_15.zip
+    source: layer
+    zip_sha256: bfad3f379729773f745e840a9e2e1888db0cce5c09dd73668cc87810461ae8bb
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:09 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 35
+    fields: 5
+    geometry_types: {"LINESTRING": 35}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_15.parquet, bytes: 17580}
+  ne_10m_graticules_20:
+    zip: 10m/physical/ne_10m_graticules_20.zip
+    source: layer
+    zip_sha256: 5c13cd62353af63131105bb1e65071fd1159ebb9f3d8a534748529bb0e8c3cd3
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:11 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 27
+    fields: 6
+    geometry_types: {"LINESTRING": 27}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_20.parquet, bytes: 17277}
+  ne_10m_graticules_30:
+    zip: 10m/physical/ne_10m_graticules_30.zip
+    source: layer
+    zip_sha256: 76764f18d128621248b2a372adaca745c0d9613e50e74193d5653084b684e8b8
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:13 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 17
+    fields: 6
+    geometry_types: {"LINESTRING": 17}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_30.parquet, bytes: 15919}
+  ne_10m_graticules_5:
+    zip: 10m/physical/ne_10m_graticules_5.zip
+    source: layer
+    zip_sha256: f4b07371ee8d01fbbbae61fe7f42e34ea0a4fa1466c813a7ec26b33fcbe59de6
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:15 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 107
+    fields: 6
+    geometry_types: {"LINESTRING": 107}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_graticules_5.parquet, bytes: 22543}
+  ne_10m_lakes:
+    zip: 10m/physical/ne_10m_lakes.zip
+    source: layer
+    zip_sha256: 0803a06f9c3cb4671d89b68c48b142aad9366ba40f665245e12a913fbc61722a
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1355
+    fields: 41
+    geometry_types: {"MULTIPOLYGON": 9, "POLYGON": 1346}
+    geometry_invalid: 2
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes.parquet, bytes: 2362262}
+  ne_10m_lakes_australia:
+    zip: 10m/physical/ne_10m_lakes_australia.zip
+    source: layer
+    zip_sha256: 44c604c90ae459947b41f082973d58a7f0a1da61e9928ee89464ba7a8b00e00e
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:48 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 84
+    fields: 40
+    geometry_types: {"POLYGON": 84}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes_australia.parquet, bytes: 98876}
+  ne_10m_lakes_europe:
+    zip: 10m/physical/ne_10m_lakes_europe.zip
+    source: layer
+    zip_sha256: c0b1f0da4dce6af3b27c49b3ed11a664d801ff3d140ca5b9814e7e85a35c1de1
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 767
+    fields: 42
+    geometry_types: {"MULTIPOLYGON": 3, "POLYGON": 764}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes_europe.parquet, bytes: 135683}
+  ne_10m_lakes_historic:
+    zip: 10m/physical/ne_10m_lakes_historic.zip
+    source: layer
+    zip_sha256: f82fb212a4e472fcfd43afb78b37b20792987cda4aa239aab6818e4b0fb713ac
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4
+    fields: 36
+    geometry_types: {"POLYGON": 4}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes_historic.parquet, bytes: 24791}
+  ne_10m_lakes_north_america:
+    zip: 10m/physical/ne_10m_lakes_north_america.zip
+    source: layer
+    zip_sha256: 96c824a2f2646ea8b16fe6711f7906ba690788a547f51e391654c8e94271ffba
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1162
+    fields: 36
+    geometry_types: {"MULTIPOLYGON": 3, "POLYGON": 1159}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes_north_america.parquet, bytes: 671388}
+  ne_10m_lakes_pluvial:
+    zip: 10m/physical/ne_10m_lakes_pluvial.zip
+    source: layer
+    zip_sha256: 65ee45597d813d604589ae90a8fdb55b411ef9b790e518942df6a245b4cea94a
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:27 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 139
+    fields: 6
+    geometry_types: {"POLYGON": 139}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_lakes_pluvial.parquet, bytes: 242975}
+  ne_10m_land:
+    zip: 10m/physical/ne_10m_land.zip
+    source: layer
+    zip_sha256: e547d749445eaa0964aba76738090ec88f5e63c4585122170f98c67a7ea922dc
+    zip_last_modified: "Fri, 13 May 2022 05:21:35 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 11
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 10, "POLYGON": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_land.parquet, bytes: 3499282}
+  ne_10m_land_ocean_label_points:
+    zip: 10m/physical/ne_10m_land_ocean_label_points.zip
+    source: layer
+    zip_sha256: 981ed3411530f9e2ad6d3089f572dd8663b1ecabd2913d0bd58fa9d7be13eab0
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:30 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4110
+    fields: 3
+    geometry_types: {"POINT": 4110}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_land_ocean_label_points.parquet, bytes: 64065}
+  ne_10m_land_ocean_seams:
+    zip: 10m/physical/ne_10m_land_ocean_seams.zip
+    source: layer
+    zip_sha256: 59aee4144a90979245e60cd0932fc578365d6fe09a55e6d5f8736eb433ba13af
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:32 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 80
+    fields: 3
+    geometry_types: {"LINESTRING": 80}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_land_ocean_seams.parquet, bytes: 58760}
+  ne_10m_land_scale_rank:
+    zip: 10m/physical/ne_10m_land_scale_rank.zip
+    source: layer
+    zip_sha256: b023cad76044ad7c71ac0136c29da101e88d7c45ac8ca0ff9e6ca5564082ee09
+    zip_last_modified: "Fri, 13 May 2022 05:21:30 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 6861
+    fields: 3
+    geometry_types: {"POLYGON": 6861}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_land_scale_rank.parquet, bytes: 3480950}
+  ne_10m_minor_islands:
+    zip: 10m/physical/ne_10m_minor_islands.zip
+    source: layer
+    zip_sha256: 47c0b3ce26df7b4dbabdbb251023918cb2f5c83462a426288f1f253da7284db2
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:36 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2795
+    fields: 3
+    geometry_types: {"POLYGON": 2795}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_minor_islands.parquet, bytes: 281151}
+  ne_10m_minor_islands_coastline:
+    zip: 10m/physical/ne_10m_minor_islands_coastline.zip
+    source: layer
+    zip_sha256: fa1d68b486b3a3ea2f625517d54b36d7544880b388170891b53a065e826ebd3e
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:38 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2741
+    fields: 3
+    geometry_types: {"LINESTRING": 2741}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_minor_islands_coastline.parquet, bytes: 276728}
+  ne_10m_minor_islands_label_points:
+    zip: 10m/physical/ne_10m_minor_islands_label_points.zip
+    source: layer
+    zip_sha256: 6e2d7a152aa0aee0d42b4b0aceac76ec1fc47f08184962ed0a958c5b7a0eed50
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:39 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2738
+    fields: 3
+    geometry_types: {"POINT": 2738}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_minor_islands_label_points.parquet, bytes: 41232}
+  ne_10m_ocean:
+    zip: 10m/physical/ne_10m_ocean.zip
+    source: layer
+    zip_sha256: db626fcd5d50b096b156c78a2cc95011b39f32a61b4e47d147e3f7a77b8b2719
+    zip_last_modified: "Fri, 13 May 2022 05:21:26 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 1}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_ocean.parquet, bytes: 3418324}
+  ne_10m_ocean_scale_rank:
+    zip: 10m/physical/ne_10m_ocean_scale_rank.zip
+    source: layer
+    zip_sha256: fb066c422b1c000cd485fdb262ff5e84e34e5d5db37bac709347a455474dd5e8
+    zip_last_modified: "Fri, 13 May 2022 05:21:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 22
+    fields: 3
+    geometry_types: {"POLYGON": 22}
+    geometry_invalid: 3
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_ocean_scale_rank.parquet, bytes: 3476251}
+  ne_10m_playas:
+    zip: 10m/physical/ne_10m_playas.zip
+    source: layer
+    zip_sha256: 74e366d0042ecfa742bf787475a78442b44ae554dfcd3366cfa35254959e873c
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 73
+    fields: 36
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 72}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_playas.parquet, bytes: 102813}
+  ne_10m_reefs:
+    zip: 10m/physical/ne_10m_reefs.zip
+    source: layer
+    zip_sha256: b29cce160628a9aa243ab9c88d2234d79af97aded495137248059230e36f508c
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:49 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1043
+    fields: 3
+    geometry_types: {"LINESTRING": 1043}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_reefs.parquet, bytes: 166934}
+  ne_10m_rivers_australia:
+    zip: 10m/physical/ne_10m_rivers_australia.zip
+    source: layer
+    zip_sha256: 725ad2c6b5db36dfb467b6e901699c9efe9774f934e8b735a84482da4dfefac7
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:48 GMT"
+    declared_version: "5.0.0-pre9"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 339
+    fields: 38
+    geometry_types: {"LINESTRING": 339}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_rivers_australia.parquet, bytes: 426340}
+  ne_10m_rivers_europe:
+    zip: 10m/physical/ne_10m_rivers_europe.zip
+    source: layer
+    zip_sha256: c730ccb4cbe21c1f03d006de4032a0dc69ade342de941d10aa1facab59019dbf
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1325
+    fields: 41
+    geometry_types: {"LINESTRING": 1098, "MULTILINESTRING": 227}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_rivers_europe.parquet, bytes: 510547}
+  ne_10m_rivers_lake_centerlines:
+    zip: 10m/physical/ne_10m_rivers_lake_centerlines.zip
+    source: layer
+    zip_sha256: ded71b01870855ccfe19b51f2ec14c9bb48fae23c0e9f3c11974d426433b5c38
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1473
+    fields: 38
+    geometry_types: {"LINESTRING": 1053, "MULTILINESTRING": 420}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_rivers_lake_centerlines.parquet, bytes: 2067405}
+  ne_10m_rivers_lake_centerlines_scale_rank:
+    zip: 10m/physical/ne_10m_rivers_lake_centerlines_scale_rank.zip
+    source: layer
+    zip_sha256: a6fc02f8d663a0cb451b2564fbc361174410cd65d14c59d11ffb870ebb8c8566
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4224
+    fields: 39
+    geometry_types: {"LINESTRING": 4222, "MULTILINESTRING": 2}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_rivers_lake_centerlines_scale_rank.parquet, bytes: 2171536}
+  ne_10m_rivers_north_america:
+    zip: 10m/physical/ne_10m_rivers_north_america.zip
+    source: layer
+    zip_sha256: 7fbe85a2acbf1f3ef4361a16bb39677ad1ea86f888be1689f7a4caeafc7529e8
+    zip_last_modified: "Wed, 08 Dec 2021 00:46:46 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4897
+    fields: 40
+    geometry_types: {"LINESTRING": 4664, "MULTILINESTRING": 214}
+    geometry_invalid: 0
+    geometry_null: 19
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_rivers_north_america.parquet, bytes: 3227389}
+  ne_10m_wgs84_bounding_box:
+    zip: 10m/physical/ne_10m_wgs84_bounding_box.zip
+    source: layer
+    zip_sha256: d1dbec97f98ee7563960b21c4057ddf655b4269713f5f8560761a8ef482ecca6
+    zip_last_modified: "Sat, 04 Sep 2021 05:51:58 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1
+    fields: 2
+    geometry_types: {"POLYGON": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/10m_physical/ne_10m_wgs84_bounding_box.parquet, bytes: 12004}
+  ne_110m_admin_0_boundary_lines_land:
+    zip: 110m/cultural/ne_110m_admin_0_boundary_lines_land.zip
+    source: layer
+    zip_sha256: bb2954981570498a4b4344f8e83fa54caa5858e15e800094112407d2bd2f940d
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 331
+    fields: 40
+    geometry_types: {"LINESTRING": 329, "MULTILINESTRING": 2}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_boundary_lines_land.parquet, bytes: 53477}
+  ne_110m_admin_0_countries:
+    zip: 110m/cultural/ne_110m_admin_0_countries.zip
+    source: layer
+    zip_sha256: 0f243aeac8ac6cf26f0417285b0bd33ac47f1b5bdb719fd3e0df37d03ea37110
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 177
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 29, "POLYGON": 148}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_countries.parquet, bytes: 231079}
+  ne_110m_admin_0_countries_lakes:
+    zip: 110m/cultural/ne_110m_admin_0_countries_lakes.zip
+    source: layer
+    zip_sha256: 5a78a5191732cbd94689be77594ffa9bcf6473ccf670e8b6097b202b86ec2815
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 177
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 29, "POLYGON": 148}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_countries_lakes.parquet, bytes: 233485}
+  ne_110m_admin_0_map_units:
+    zip: 110m/cultural/ne_110m_admin_0_map_units.zip
+    source: layer
+    zip_sha256: 872d08df472659638b3191f0742b554baeeeb3f82c95ea840dd2021ce4db02af
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 183
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 28, "POLYGON": 155}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_map_units.parquet, bytes: 236153}
+  ne_110m_admin_0_pacific_groupings:
+    zip: 110m/cultural/ne_110m_admin_0_pacific_groupings.zip
+    source: layer
+    zip_sha256: 2aa71a8a77629ae0ca38d987e00227cb474bd4971fd49ac613cd890e31b9bbd5
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:15 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 62
+    fields: 2
+    geometry_types: {"LINESTRING": 62}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_pacific_groupings.parquet, bytes: 12305}
+  ne_110m_admin_0_scale_rank:
+    zip: 110m/cultural/ne_110m_admin_0_scale_rank.zip
+    source: layer
+    zip_sha256: 5bbdf7e2bd692192aaec57a7ea901f43c54054176caf836bdd04e9cccae0c5c1
+    zip_last_modified: "Wed, 08 Dec 2021 00:50:37 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 290
+    fields: 7
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 289}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_scale_rank.parquet, bytes: 126572}
+  ne_110m_admin_0_sovereignty:
+    zip: 110m/cultural/ne_110m_admin_0_sovereignty.zip
+    source: layer
+    zip_sha256: 4d20ec23fe9b101c6592f671c17678871d82a427a6bf7f5cba15e94a4e394072
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 171
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 29, "POLYGON": 142}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_sovereignty.parquet, bytes: 227596}
+  ne_110m_admin_0_tiny_countries:
+    zip: 110m/cultural/ne_110m_admin_0_tiny_countries.zip
+    source: layer
+    zip_sha256: 076ae0cd04648c22756f574d4c3889266ea779593e717ab5e17b8ff06700d2a0
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 37
+    fields: 170
+    geometry_types: {"POINT": 37}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_0_tiny_countries.parquet, bytes: 51616}
+  ne_110m_admin_1_states_provinces:
+    zip: 110m/cultural/ne_110m_admin_1_states_provinces.zip
+    source: layer
+    zip_sha256: 82f8e4db91152e98884c00704de31be618d8bd8c84dade2123e72e948d74e195
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 51
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 3, "POLYGON": 48}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_1_states_provinces.parquet, bytes: 57842}
+  ne_110m_admin_1_states_provinces_lakes:
+    zip: 110m/cultural/ne_110m_admin_1_states_provinces_lakes.zip
+    source: layer
+    zip_sha256: 7584d76a18b196e30a07de2f0d6fd1f672af7c87b9a0b0eeb592cf68b15bfe64
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 51
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 4, "POLYGON": 47}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_1_states_provinces_lakes.parquet, bytes: 57068}
+  ne_110m_admin_1_states_provinces_lines:
+    zip: 110m/cultural/ne_110m_admin_1_states_provinces_lines.zip
+    source: layer
+    zip_sha256: 9ebde98fe3fa2d8ea69f1d63b865531717a666d111c11a3b38fdaf18b06a84e9
+    zip_last_modified: "Fri, 13 May 2022 05:22:22 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 109
+    fields: 43
+    geometry_types: {"LINESTRING": 109}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_1_states_provinces_lines.parquet, bytes: 19180}
+  ne_110m_admin_1_states_provinces_scale_rank:
+    zip: 110m/cultural/ne_110m_admin_1_states_provinces_scale_rank.zip
+    source: layer
+    zip_sha256: 026f40f8c1156a154ec2f531aba15ab32fde414c496fb3381f583abb33414789
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:27 GMT"
+    declared_version: "4.1.0"
+    page_version: null
+    encoding: "from .cpg 'UTF-8'"
+    features: 51
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 3, "POLYGON": 48}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_admin_1_states_provinces_scale_rank.parquet, bytes: 24844}
+  ne_110m_populated_places:
+    zip: 110m/cultural/ne_110m_populated_places.zip
+    source: layer
+    zip_sha256: 29b901a2ae0a745741c0642123480e31101ed723086c4d0cae657a8d722c3b28
+    zip_last_modified: "Fri, 13 May 2022 23:11:50 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 243
+    fields: 137
+    geometry_types: {"POINT": 243}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_populated_places.parquet, bytes: 129690}
+  ne_110m_populated_places_simple:
+    zip: 110m/cultural/ne_110m_populated_places_simple.zip
+    source: layer
+    zip_sha256: 3f3d99a9a5d84605bb3be07b94c9122b4d69d7545de478b314d75f5b0742afdf
+    zip_last_modified: "Fri, 13 May 2022 23:11:50 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 243
+    fields: 31
+    geometry_types: {"POINT": 243}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_cultural/ne_110m_populated_places_simple.parquet, bytes: 31538}
+  ne_110m_coastline:
+    zip: 110m/physical/ne_110m_coastline.zip
+    source: layer
+    zip_sha256: 664449b39070027e882abb295974d182afec18ca21107273d17e9e8bf6f64817
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:38 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 134
+    fields: 3
+    geometry_types: {"LINESTRING": 134}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_coastline.parquet, bytes: 78707}
+  ne_110m_geographic_lines:
+    zip: 110m/physical/ne_110m_geographic_lines.zip
+    source: layer
+    zip_sha256: 9939e240dd580019248509dcefda47168536550bdf0f35e3af5fe7889f9919aa
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 6
+    fields: 36
+    geometry_types: {"LINESTRING": 5, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_geographic_lines.parquet, bytes: 28752}
+  ne_110m_geography_marine_polys:
+    zip: 110m/physical/ne_110m_geography_marine_polys.zip
+    source: layer
+    zip_sha256: 734e517f9db60be3c0e2b39f4f14e182ff944992b552641d4f6ef541c486cd7b
+    zip_last_modified: "Fri, 13 May 2022 05:22:43 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 29
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 3, "POLYGON": 26}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_geography_marine_polys.parquet, bytes: 338804}
+  ne_110m_geography_regions_elevation_points:
+    zip: 110m/physical/ne_110m_geography_regions_elevation_points.zip
+    source: layer
+    zip_sha256: 5f1952dc9b8b947fe492778282a67c7ecd84c66052977f1400f3e6b817f30b61
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 19
+    fields: 43
+    geometry_types: {"POINT": 19}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_geography_regions_elevation_points.parquet, bytes: 15444}
+  ne_110m_geography_regions_points:
+    zip: 110m/physical/ne_110m_geography_regions_points.zip
+    source: layer
+    zip_sha256: ad739f89fd5b6fc49a35e79f401de526bd082864fe82ce1a602a6e0a56147451
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 3
+    fields: 39
+    geometry_types: {"POINT": 3}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_geography_regions_points.parquet, bytes: 10337}
+  ne_110m_geography_regions_polys:
+    zip: 110m/physical/ne_110m_geography_regions_polys.zip
+    source: layer
+    zip_sha256: d4031467d254a01eec1561230290f26099644344ed50763ced235b8e50df9419
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 60
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 30, "POLYGON": 30}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_geography_regions_polys.parquet, bytes: 643331}
+  ne_110m_glaciated_areas:
+    zip: 110m/physical/ne_110m_glaciated_areas.zip
+    source: layer
+    zip_sha256: 7247fc9dc9b7d66b0bd8970fad81c46cb18d392ed52be348a313bbd8c1f4b990
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:48 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 11
+    fields: 3
+    geometry_types: {"POLYGON": 11}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_glaciated_areas.parquet, bytes: 14179}
+  ne_110m_graticules_1:
+    zip: 110m/physical/ne_110m_graticules_1.zip
+    source: layer
+    zip_sha256: f3da82eba0934ffd3551c7cf88b59e9f3ae076f47e080f86bdfbf50aa602f330
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:49 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 539
+    fields: 5
+    geometry_types: {"LINESTRING": 539}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_1.parquet, bytes: 62681}
+  ne_110m_graticules_10:
+    zip: 110m/physical/ne_110m_graticules_10.zip
+    source: layer
+    zip_sha256: 6a3f90c774f508c5cae45e88f18dac77a78e4f8290b3aaf1191aa9c54f9878db
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:51 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 53
+    fields: 5
+    geometry_types: {"LINESTRING": 53}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_10.parquet, bytes: 19641}
+  ne_110m_graticules_15:
+    zip: 110m/physical/ne_110m_graticules_15.zip
+    source: layer
+    zip_sha256: 13f1345cf92fb99a0bcd20d8e60036f698ddc6ab37bd847a8c4ef6f7e71457b7
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:53 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 35
+    fields: 5
+    geometry_types: {"LINESTRING": 35}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_15.parquet, bytes: 17583}
+  ne_110m_graticules_20:
+    zip: 110m/physical/ne_110m_graticules_20.zip
+    source: layer
+    zip_sha256: e56d7d03ba25a61614566fe6a383d967ec9702b3308a404b676404ce6fcfaf94
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:55 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 27
+    fields: 6
+    geometry_types: {"LINESTRING": 27}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_20.parquet, bytes: 17280}
+  ne_110m_graticules_30:
+    zip: 110m/physical/ne_110m_graticules_30.zip
+    source: layer
+    zip_sha256: 899e5830e78916bdd0b099244240c86cad0e3f7e3cc5b4271ad7f1880358e1d6
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:56 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 17
+    fields: 6
+    geometry_types: {"LINESTRING": 17}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_30.parquet, bytes: 15922}
+  ne_110m_graticules_5:
+    zip: 110m/physical/ne_110m_graticules_5.zip
+    source: layer
+    zip_sha256: 6747aaafe2feeb102dfe70116034053a288bc47c2e3aaaac6f3fc7bc09d6479b
+    zip_last_modified: "Sat, 04 Sep 2021 05:53:58 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 107
+    fields: 6
+    geometry_types: {"LINESTRING": 107}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_graticules_5.parquet, bytes: 22546}
+  ne_110m_lakes:
+    zip: 110m/physical/ne_110m_lakes.zip
+    source: layer
+    zip_sha256: f2eed3c738a93010770acb0ba44273ea6a83b053641588bc902d9d6fd1cdafcb
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 24
+    fields: 37
+    geometry_types: {"POLYGON": 24}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_lakes.parquet, bytes: 22149}
+  ne_110m_land:
+    zip: 110m/physical/ne_110m_land.zip
+    source: layer
+    zip_sha256: 1926c621afd6ac67c3f36639bb1236134a48d82226dc675d3e3df53d02d2a3de
+    zip_last_modified: "Sat, 04 Sep 2021 05:54:03 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 127
+    fields: 3
+    geometry_types: {"POLYGON": 127}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_land.parquet, bytes: 62563}
+  ne_110m_ocean:
+    zip: 110m/physical/ne_110m_ocean.zip
+    source: layer
+    zip_sha256: 69defc462d126f2dca698f14da6771f491254b23ba81fbb7c5ae5fbe0bce3fa0
+    zip_last_modified: "Sat, 04 Sep 2021 05:54:04 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2
+    fields: 3
+    geometry_types: {"POLYGON": 2}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_ocean.parquet, bytes: 62690}
+  ne_110m_rivers_lake_centerlines:
+    zip: 110m/physical/ne_110m_rivers_lake_centerlines.zip
+    source: layer
+    zip_sha256: 1a010128c0801de738307eda7fd0ad3533a5985bc7e223c6640bdd749495f655
+    zip_last_modified: "Wed, 08 Dec 2021 00:51:17 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 13
+    fields: 35
+    geometry_types: {"LINESTRING": 13}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_rivers_lake_centerlines.parquet, bytes: 28511}
+  ne_110m_wgs84_bounding_box:
+    zip: 110m/physical/ne_110m_wgs84_bounding_box.zip
+    source: layer
+    zip_sha256: dc5a84caf2a49b124f6324def0dff1f35eb4964a89fbe6677d18794371f5f27b
+    zip_last_modified: "Sat, 04 Sep 2021 05:54:08 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1
+    fields: 2
+    geometry_types: {"POLYGON": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/110m_physical/ne_110m_wgs84_bounding_box.parquet, bytes: 3562}
+  ne_50m_admin_0_boundary_lines_disputed_areas:
+    zip: 50m/cultural/ne_50m_admin_0_boundary_lines_disputed_areas.zip
+    source: layer
+    zip_sha256: 0765ade48688db1f3141f8ea0cefffedf1dab4337ceabc8b148bb95b8bfb63b3
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 34
+    fields: 41
+    geometry_types: {"LINESTRING": 34}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_boundary_lines_disputed_areas.parquet, bytes: 23841}
+  ne_50m_admin_0_boundary_lines_land:
+    zip: 50m/cultural/ne_50m_admin_0_boundary_lines_land.zip
+    source: layer
+    zip_sha256: 02f369ae10578c4ce33fc4a08f8cdd69ea11eb39b44d7923e88eb7199aaff8ea
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 390
+    fields: 39
+    geometry_types: {"LINESTRING": 388, "MULTILINESTRING": 2}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_boundary_lines_land.parquet, bytes: 307519}
+  ne_50m_admin_0_boundary_lines_maritime_indicator:
+    zip: 50m/cultural/ne_50m_admin_0_boundary_lines_maritime_indicator.zip
+    source: layer
+    zip_sha256: 9b2c0eef26d5856891c86d99549b7fb80712187ba15859267847209c35761988
+    zip_last_modified: "Wed, 08 Dec 2021 00:47:43 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 205
+    fields: 40
+    geometry_types: {"LINESTRING": 205}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_boundary_lines_maritime_indicator.parquet, bytes: 27666}
+  ne_50m_admin_0_boundary_lines_maritime_indicator_chn:
+    zip: 50m/cultural/ne_50m_admin_0_boundary_lines_maritime_indicator_chn.zip
+    source: layer
+    zip_sha256: 9c01d21c35334ccb2c043401d055f6890afc186548beee73e1548b419df3edfa
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 9
+    fields: 41
+    geometry_types: {"LINESTRING": 9}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_boundary_lines_maritime_indicator_chn.parquet, bytes: 12205}
+  ne_50m_admin_0_boundary_map_units:
+    zip: 50m/cultural/ne_50m_admin_0_boundary_map_units.zip
+    source: layer
+    zip_sha256: 28957767c7720abb07bc835e961e8d43b72111f13b04dc488dcf3a8af493896c
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 9
+    fields: 37
+    geometry_types: {"LINESTRING": 9}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_boundary_map_units.parquet, bytes: 10595}
+  ne_50m_admin_0_breakaway_disputed_areas:
+    zip: 50m/cultural/ne_50m_admin_0_breakaway_disputed_areas.zip
+    source: layer
+    zip_sha256: 916aa95a9ce65bb1d551cf5fe1f689d96032a3498b053487bbd4a805650f8f4d
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 28
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 27}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_breakaway_disputed_areas.parquet, bytes: 74274}
+  ne_50m_admin_0_breakaway_disputed_areas_scale_rank:
+    zip: 50m/cultural/50m_cultural.zip
+    source: theme package
+    zip_sha256: 84875b2b54e8dd2ab3424a6d700dfb226e32b393e63b8721e0fdbaf9f560b18e
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "no .cpg, LDID 0; every text value is valid UTF-8 (0 non-ASCII)"
+    features: 28
+    fields: 5
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 27}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_breakaway_disputed_areas_scale_rank.parquet, bytes: 29276}
+  ne_50m_admin_0_countries:
+    zip: 50m/cultural/ne_50m_admin_0_countries.zip
+    source: layer
+    zip_sha256: 5fed433373581fa648920435f937d95f2d3c0200e067409c6478dcdf1b853139
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 242
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 119, "POLYGON": 123}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_countries.parquet, bytes: 823750}
+  ne_50m_admin_0_countries_lakes:
+    zip: 50m/cultural/ne_50m_admin_0_countries_lakes.zip
+    source: layer
+    zip_sha256: ae7b7424af667f980e730dbcdc6bc776398e04904a616b0c0dd33558c06be13d
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 242
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 123, "POLYGON": 119}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_countries_lakes.parquet, bytes: 841534}
+  ne_50m_admin_0_map_subunits:
+    zip: 50m/cultural/ne_50m_admin_0_map_subunits.zip
+    source: layer
+    zip_sha256: 156c8645eea09b8c6e487d7e490c29b06f5307ea7c0a3dd8abd032e3f1b36767
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 308
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 134, "POLYGON": 174}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_map_subunits.parquet, bytes: 855514}
+  ne_50m_admin_0_map_units:
+    zip: 50m/cultural/ne_50m_admin_0_map_units.zip
+    source: layer
+    zip_sha256: f449ec126985e5aab30aea4b439c2d9eb0c5d40bd722fc1036ad3b6477e25cdd
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 265
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 127, "POLYGON": 138}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_map_units.parquet, bytes: 839114}
+  ne_50m_admin_0_pacific_groupings:
+    zip: 50m/cultural/ne_50m_admin_0_pacific_groupings.zip
+    source: layer
+    zip_sha256: 8a32f4d04778ee966a8c546654b20214659235f1cc86de7d28e84a73d02abd5e
+    zip_last_modified: "Wed, 08 Dec 2021 00:47:43 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 63
+    fields: 4
+    geometry_types: {"LINESTRING": 63}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_pacific_groupings.parquet, bytes: 20485}
+  ne_50m_admin_0_scale_rank:
+    zip: 50m/cultural/ne_50m_admin_0_scale_rank.zip
+    source: layer
+    zip_sha256: dcef0e3ad02a1df8c7dbfc48ec364fa30e1c56d85793cf8c9c371557889b9207
+    zip_last_modified: "Thu, 05 May 2022 06:10:31 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1636
+    fields: 8
+    geometry_types: {"POLYGON": 1631}
+    geometry_invalid: 0
+    geometry_null: 5
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_scale_rank.parquet, bytes: 697213}
+  ne_50m_admin_0_sovereignty:
+    zip: 50m/cultural/ne_50m_admin_0_sovereignty.zip
+    source: layer
+    zip_sha256: 93ae37184d2aef2d811417c62eff5c218cccf095e2ed15fc0b255c07c55c56aa
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 201
+    fields: 168
+    geometry_types: {"MULTIPOLYGON": 99, "POLYGON": 102}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_sovereignty.parquet, bytes: 801084}
+  ne_50m_admin_0_tiny_countries:
+    zip: 50m/cultural/ne_50m_admin_0_tiny_countries.zip
+    source: layer
+    zip_sha256: e6b63e61220a65a78dfddd67cdec3aadd1e335e904de12c98442e693e62ce9d2
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 76
+    fields: 170
+    geometry_types: {"POINT": 76}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_tiny_countries.parquet, bytes: 76570}
+  ne_50m_admin_0_tiny_countries_scale_rank:
+    zip: 50m/cultural/ne_50m_admin_0_tiny_countries_scale_rank.zip
+    source: layer
+    zip_sha256: a18cc3cc293ba0adf80c51bd7bfc511f4989dceba602b8541f1e07d46d1222d7
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:01 GMT"
+    declared_version: "4.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 76
+    fields: 9
+    geometry_types: {"POINT": 76}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_0_tiny_countries_scale_rank.parquet, bytes: 6314}
+  ne_50m_admin_1_seams:
+    zip: 50m/cultural/50m_cultural.zip
+    source: theme package
+    zip_sha256: 84875b2b54e8dd2ab3424a6d700dfb226e32b393e63b8721e0fdbaf9f560b18e
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: null
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 4
+    fields: 2
+    geometry_types: {"LINESTRING": 4}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_1_seams.parquet, bytes: 2417}
+  ne_50m_admin_1_states_provinces:
+    zip: 50m/cultural/ne_50m_admin_1_states_provinces.zip
+    source: layer
+    zip_sha256: 61f79e6705e62a55d6bcf698394295a589af5e24a4b2684c6519dd35c1300bf6
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 294
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 84, "POLYGON": 210}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_1_states_provinces.parquet, bytes: 855628}
+  ne_50m_admin_1_states_provinces_lakes:
+    zip: 50m/cultural/ne_50m_admin_1_states_provinces_lakes.zip
+    source: layer
+    zip_sha256: 2506a9fad6b5de40d6fe096e341d32ced112d58ac5dd3eb85b907bb16942e6bc
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.1"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 294
+    fields: 121
+    geometry_types: {"MULTIPOLYGON": 86, "POLYGON": 208}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_1_states_provinces_lakes.parquet, bytes: 866046}
+  ne_50m_admin_1_states_provinces_lines:
+    zip: 50m/cultural/ne_50m_admin_1_states_provinces_lines.zip
+    source: layer
+    zip_sha256: 464e762020d198257a07f5f62eb7cbfc287fccbc0a6db788d8068b49844d951e
+    zip_last_modified: "Fri, 13 May 2022 05:21:46 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 581
+    fields: 43
+    geometry_types: {"LINESTRING": 571, "MULTILINESTRING": 10}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_1_states_provinces_lines.parquet, bytes: 248623}
+  ne_50m_admin_1_states_provinces_scale_rank:
+    zip: 50m/cultural/ne_50m_admin_1_states_provinces_scale_rank.zip
+    source: layer
+    zip_sha256: 63c04bb200573a52a164fc7978b6175a2450f78042df6c1ebb41f9dc0c3e96f6
+    zip_last_modified: "Wed, 08 Dec 2021 00:47:44 GMT"
+    declared_version: "5.0.0"
+    page_version: null
+    encoding: "from .cpg 'UTF-8'"
+    features: 531
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 41, "POLYGON": 490}
+    geometry_invalid: 1
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_admin_1_states_provinces_scale_rank.parquet, bytes: 739631}
+  ne_50m_airports:
+    zip: 50m/cultural/50m_cultural.zip
+    source: theme package
+    zip_sha256: 84875b2b54e8dd2ab3424a6d700dfb226e32b393e63b8721e0fdbaf9f560b18e
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: "2.0.0"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 284
+    fields: 40
+    geometry_types: {"POINT": 284}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_airports.parquet, bytes: 95266}
+  ne_50m_populated_places:
+    zip: 50m/cultural/ne_50m_populated_places.zip
+    source: layer
+    zip_sha256: 9022c3be867be79c44bd6fc6ff4dcc210e85ffee13b033bf4d1d87d83c9ee6b4
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1251
+    fields: 137
+    geometry_types: {"POINT": 1251}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_populated_places.parquet, bytes: 484867}
+  ne_50m_populated_places_simple:
+    zip: 50m/cultural/ne_50m_populated_places_simple.zip
+    source: layer
+    zip_sha256: a6ebb4be4672de4cd2b94b04cdc9a1bd5a5cb684d28c0e75f535152e5f07a296
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: "5.1.2"
+    page_version: "5.1.2"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1251
+    fields: 31
+    geometry_types: {"POINT": 1251}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_populated_places_simple.parquet, bytes: 107315}
+  ne_50m_ports:
+    zip: 50m/cultural/50m_cultural.zip
+    source: theme package
+    zip_sha256: 84875b2b54e8dd2ab3424a6d700dfb226e32b393e63b8721e0fdbaf9f560b18e
+    zip_last_modified: "Fri, 13 May 2022 23:11:35 GMT"
+    declared_version: "2.0.0"
+    page_version: "5.1.1"
+    encoding: "from .cpg 'UTF-8'"
+    features: 143
+    fields: 6
+    geometry_types: {"POINT": 143}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_ports.parquet, bytes: 7596}
+  ne_50m_urban_areas:
+    zip: 50m/cultural/ne_50m_urban_areas.zip
+    source: layer
+    zip_sha256: 69e916a46e663eefe8469cf4154bd34ff9486fb91e4a54762dbe85c1bbfb912b
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:13 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2143
+    fields: 4
+    geometry_types: {"POLYGON": 2143}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_cultural/ne_50m_urban_areas.parquet, bytes: 417054}
+  ne_50m_antarctic_ice_shelves_lines:
+    zip: 50m/physical/ne_50m_antarctic_ice_shelves_lines.zip
+    source: layer
+    zip_sha256: 62f03a7b107bc1d89937fd19d858738e2034dc88702a9a87174fa6b80b2b5c81
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:18 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 99
+    fields: 3
+    geometry_types: {"LINESTRING": 98, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_antarctic_ice_shelves_lines.parquet, bytes: 32073}
+  ne_50m_antarctic_ice_shelves_polys:
+    zip: 50m/physical/ne_50m_antarctic_ice_shelves_polys.zip
+    source: layer
+    zip_sha256: 036a87f0e1873cbb848e5570622ea337e25ddfefc9759094207a1431a2ec329c
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:19 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 64
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 63}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_antarctic_ice_shelves_polys.parquet, bytes: 76652}
+  ne_50m_coastline:
+    zip: 50m/physical/ne_50m_coastline.zip
+    source: layer
+    zip_sha256: 640f805509b822f57f4840a2e18d9ff2412cf1cf6976124701c2789436166fde
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:21 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1428
+    fields: 3
+    geometry_types: {"LINESTRING": 1427, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_coastline.parquet, bytes: 423521}
+  ne_50m_geographic_lines:
+    zip: 50m/physical/ne_50m_geographic_lines.zip
+    source: layer
+    zip_sha256: 58e5580d7d76eb4bff2d2d6ef4bca3b76f8e331b2556580c631b46b44f7dd3b9
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 6
+    fields: 36
+    geometry_types: {"LINESTRING": 5, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_geographic_lines.parquet, bytes: 28749}
+  ne_50m_geography_marine_polys:
+    zip: 50m/physical/ne_50m_geography_marine_polys.zip
+    source: layer
+    zip_sha256: 9e460b9fe2566d3f466d69096348953f5348bab63ce1328c94c3072b9f48eef1
+    zip_last_modified: "Fri, 13 May 2022 05:22:02 GMT"
+    declared_version: "5.1.0"
+    page_version: "5.1.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 118
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 9, "POLYGON": 109}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_geography_marine_polys.parquet, bytes: 692456}
+  ne_50m_geography_regions_elevation_points:
+    zip: 50m/physical/ne_50m_geography_regions_elevation_points.zip
+    source: layer
+    zip_sha256: b23b3f62c1a003ea733e2cc161148d7d4f8726462f0b45592b7ca3b52cafe6c7
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 86
+    fields: 43
+    geometry_types: {"POINT": 86}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_geography_regions_elevation_points.parquet, bytes: 36512}
+  ne_50m_geography_regions_points:
+    zip: 50m/physical/ne_50m_geography_regions_points.zip
+    source: layer
+    zip_sha256: c4498acc334dc84209bdac0f3262a1762a7983ed66d50073cab17bd3435cdfb9
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 162
+    fields: 39
+    geometry_types: {"POINT": 162}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_geography_regions_points.parquet, bytes: 55463}
+  ne_50m_geography_regions_polys:
+    zip: 50m/physical/ne_50m_geography_regions_polys.zip
+    source: layer
+    zip_sha256: a6e7ac257f6f0847ed80e6dc6e776441456652c093cfe90c7bf26dc8069f0d03
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 522
+    fields: 37
+    geometry_types: {"MULTIPOLYGON": 112, "POLYGON": 410}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_geography_regions_polys.parquet, bytes: 1400489}
+  ne_50m_glaciated_areas:
+    zip: 50m/physical/ne_50m_glaciated_areas.zip
+    source: layer
+    zip_sha256: f48644b4523482501bcd380c4b7345ba574ab79b87df753447d772ea239b7daf
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:32 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 377
+    fields: 3
+    geometry_types: {"POLYGON": 377}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_glaciated_areas.parquet, bytes: 212763}
+  ne_50m_graticules_1:
+    zip: 50m/physical/ne_50m_graticules_1.zip
+    source: layer
+    zip_sha256: 181470e37fe95c7a3e593144bc4edb2361dddc9b9a980590ec851279439bc1ce
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:34 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 539
+    fields: 5
+    geometry_types: {"LINESTRING": 539}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_1.parquet, bytes: 62678}
+  ne_50m_graticules_10:
+    zip: 50m/physical/ne_50m_graticules_10.zip
+    source: layer
+    zip_sha256: de293e438b084aa037c7c073310a471972a0417fa6d9af393620d4f19a407b7d
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:35 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 53
+    fields: 5
+    geometry_types: {"LINESTRING": 53}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_10.parquet, bytes: 19638}
+  ne_50m_graticules_15:
+    zip: 50m/physical/ne_50m_graticules_15.zip
+    source: layer
+    zip_sha256: db683ad1fab7259f1e6f5a05ec56338ec3813d6d6edb8072ec11894ef6262051
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:37 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 35
+    fields: 5
+    geometry_types: {"LINESTRING": 35}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_15.parquet, bytes: 17580}
+  ne_50m_graticules_20:
+    zip: 50m/physical/ne_50m_graticules_20.zip
+    source: layer
+    zip_sha256: ee895cefa419f1cdbb0dd5b71f33c231e5c4c8833b987361043bbf9821f2fd79
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:39 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 27
+    fields: 6
+    geometry_types: {"LINESTRING": 27}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_20.parquet, bytes: 17277}
+  ne_50m_graticules_30:
+    zip: 50m/physical/ne_50m_graticules_30.zip
+    source: layer
+    zip_sha256: 7b5f8666c870e3b4172ca2ec16c6a6831d28c52d683ace73c7d60d769e8804b6
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:40 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 17
+    fields: 6
+    geometry_types: {"LINESTRING": 17}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_30.parquet, bytes: 15919}
+  ne_50m_graticules_5:
+    zip: 50m/physical/ne_50m_graticules_5.zip
+    source: layer
+    zip_sha256: e80f64ca6a0ea041b7a88c2a63ce5a69dfdc8422171e2bbc0710ce072c54fcf2
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:42 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 107
+    fields: 6
+    geometry_types: {"LINESTRING": 107}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_graticules_5.parquet, bytes: 22543}
+  ne_50m_lakes:
+    zip: 50m/physical/ne_50m_lakes.zip
+    source: layer
+    zip_sha256: f28d42c286d96b57a17aac2cbeb432f8c65532c20063495711fbc64e24666df3
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 412
+    fields: 39
+    geometry_types: {"POLYGON": 412}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_lakes.parquet, bytes: 218876}
+  ne_50m_lakes_historic:
+    zip: 50m/physical/ne_50m_lakes_historic.zip
+    source: layer
+    zip_sha256: 6b7bd54abaefa28458f4ef4c69ce9ea2ef837a9b532f6bf279f60933cac75b34
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 2
+    fields: 35
+    geometry_types: {"POLYGON": 2}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_lakes_historic.parquet, bytes: 11581}
+  ne_50m_land:
+    zip: 50m/physical/ne_50m_land.zip
+    source: layer
+    zip_sha256: 0b8e670cf80dce9cbebe2a193bc44ba5602758c22e1fa603980553646d7ff162
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:49 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1420
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 1419}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_land.parquet, bytes: 423963}
+  ne_50m_ocean:
+    zip: 50m/physical/ne_50m_ocean.zip
+    source: layer
+    zip_sha256: abf268ba229f5eaab5012d7bfba340b424a4d25ed1efa085815c4a17ee0fd77d
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:51 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1
+    fields: 3
+    geometry_types: {"MULTIPOLYGON": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_ocean.parquet, bytes: 458518}
+  ne_50m_playas:
+    zip: 50m/physical/ne_50m_playas.zip
+    source: layer
+    zip_sha256: c7b11034e72945bd543648ce8ae574ec272fc6604f67399e5c8e9e42bce5e40e
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 27
+    fields: 34
+    geometry_types: {"MULTIPOLYGON": 1, "POLYGON": 26}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_playas.parquet, bytes: 29667}
+  ne_50m_rivers_lake_centerlines:
+    zip: 50m/physical/ne_50m_rivers_lake_centerlines.zip
+    source: layer
+    zip_sha256: c607d9d7e7702827a7996fff6dc17b87a338c5ed3b52d12c402e0c9669cc7b56
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 478
+    fields: 36
+    geometry_types: {"LINESTRING": 295, "MULTILINESTRING": 182}
+    geometry_invalid: 0
+    geometry_null: 1
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_rivers_lake_centerlines.parquet, bytes: 472469}
+  ne_50m_rivers_lake_centerlines_scale_rank:
+    zip: 50m/physical/ne_50m_rivers_lake_centerlines_scale_rank.zip
+    source: layer
+    zip_sha256: 704b2d8e313559144fbb017c601bc2c8cdd4a4c16d345ab94a74e3a758fb5701
+    zip_last_modified: "Wed, 08 Dec 2021 00:49:53 GMT"
+    declared_version: "5.0.0"
+    page_version: "5.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1633
+    fields: 38
+    geometry_types: {"LINESTRING": 1632, "MULTILINESTRING": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_rivers_lake_centerlines_scale_rank.parquet, bytes: 509489}
+  ne_50m_wgs84_bounding_box:
+    zip: 50m/physical/ne_50m_wgs84_bounding_box.zip
+    source: layer
+    zip_sha256: 3635b86dc675e2d03f687cf3ae9733c4eaa12b61d3aee268ddae0bbfd1e87e15
+    zip_last_modified: "Sat, 04 Sep 2021 05:56:58 GMT"
+    declared_version: "4.1.0"
+    page_version: "4.0.0"
+    encoding: "from .cpg 'UTF-8'"
+    features: 1
+    fields: 2
+    geometry_types: {"POLYGON": 1}
+    geometry_invalid: 0
+    geometry_null: 0
+    geometry_empty: 0
+    parquet: {file: parquet/v5.1.2/50m_physical/ne_50m_wgs84_bounding_box.parquet, bytes: 4601}

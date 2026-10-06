@@ -1,0 +1,101 @@
+{
+ "sha": "f1890d9f152c896d250a77557a5751a93d494776",
+ "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/trees/f1890d9f152c896d250a77557a5751a93d494776",
+ "tree": [
+  {
+   "path": "10m_cultural",
+   "mode": "040000",
+   "type": "tree",
+   "sha": "1e239f61e9778fec40f03035386e4c75ace039fb",
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/trees/1e239f61e9778fec40f03035386e4c75ace039fb"
+  },
+  {
+   "path": "10m_cultural/ne_10m_admin_0_countries.dbf",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "0d66afaf65fa81968afa449516daf2fd65cbb28a",
+   "size": 878482,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/0d66afaf65fa81968afa449516daf2fd65cbb28a"
+  },
+  {
+   "path": "10m_cultural/ne_10m_admin_0_countries.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "a10056b74ef4ba38e4af7f7f127ea8f48124b2da",
+   "size": 8806224,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/a10056b74ef4ba38e4af7f7f127ea8f48124b2da"
+  },
+  {
+   "path": "10m_cultural/ne_10m_parks_and_protected_lands_area.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "c890688787f208e891dc5b89fc57dbb2ba206d63",
+   "size": 116384,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/c890688787f208e891dc5b89fc57dbb2ba206d63"
+  },
+  {
+   "path": "10m_physical/ne_10m_bathymetry_all",
+   "mode": "040000",
+   "type": "tree",
+   "sha": "434c2d1aff341b4d152ab7496dee5636614a474b",
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/trees/434c2d1aff341b4d152ab7496dee5636614a474b"
+  },
+  {
+   "path": "10m_physical/ne_10m_bathymetry_all/ne_10m_bathymetry_A_10000.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "c51113389ebd0809db9a0426f15a32f847adecc8",
+   "size": 1676,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/c51113389ebd0809db9a0426f15a32f847adecc8"
+  },
+  {
+   "path": "10m_physical/ne_10m_land.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "6dd25a1c5bc7f97b2a2d711d6ea83451312d99af",
+   "size": 7166824,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/6dd25a1c5bc7f97b2a2d711d6ea83451312d99af"
+  },
+  {
+   "path": "110m_physical/ne_110m_land.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "69ce127bf49cc005144f63846b102e6b91358e8e",
+   "size": 89504,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/69ce127bf49cc005144f63846b102e6b91358e8e"
+  },
+  {
+   "path": "50m_cultural/ne_50m_airports.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "3baac82e7eaa9db95159b9165499fc43137c8d3d",
+   "size": 8052,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/3baac82e7eaa9db95159b9165499fc43137c8d3d"
+  },
+  {
+   "path": "README.md",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "ec4385adc81cd0320ba23f7f9f1f376fb1951d44",
+   "size": 4692,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/ec4385adc81cd0320ba23f7f9f1f376fb1951d44"
+  },
+  {
+   "path": "packages/Natural_Earth_quick_start/10m_cultural/ne_10m_admin_0_countries.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "a10056b74ef4ba38e4af7f7f127ea8f48124b2da",
+   "size": 8806224,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/a10056b74ef4ba38e4af7f7f127ea8f48124b2da"
+  },
+  {
+   "path": "tools/457_fix_wikidataids/ne_10m_populated_places_modified.shp",
+   "mode": "100644",
+   "type": "blob",
+   "sha": "9f1d75b123373ba4207ced539cb1575794e94ab6",
+   "size": 205732,
+   "url": "https://api.github.com/repos/nvkelso/natural-earth-vector/git/blobs/9f1d75b123373ba4207ced539cb1575794e94ab6"
+  }
+ ],
+ "truncated": false
+}
